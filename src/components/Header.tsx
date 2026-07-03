@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
         <div>
           <h1 className="text-lg sm:text-xl font-display font-black tracking-tight text-[#221A12] dark:text-slate-100">
-            Sprite Checklist
+            My Sprites
           </h1>
         </div>
       </div>
