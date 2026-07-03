@@ -1,0 +1,6 @@
+{
+  "name": "Sprite Checklist",
+  "description": "An elegant, premium collector's sprite checklist styled with the warm 'Honey Glow' design system. Features real-time state persistence, custom search and category filtering, procedural vector renderings, and collector note logs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
