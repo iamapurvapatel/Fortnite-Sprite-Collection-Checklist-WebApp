@@ -4,6 +4,9 @@
 
 Players can browse Sprites by category, mark collected items with a single click, monitor collection progress through dynamic progress indicators, and quickly identify what remains to be found. The interface is designed to be lightweight, responsive, and distraction-free while maintaining a polished, game-inspired aesthetic.
 
+Access it here:
+* https://www.mysprites.art/
+
 ## Features
 
 * 🎮 Interactive Sprite collection tracker
