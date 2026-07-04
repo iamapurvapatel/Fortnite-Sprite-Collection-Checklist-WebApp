@@ -640,6 +640,15 @@ export default function App() {
         )}
       </div>
 
+      {/* Footer */}
+      <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-8 text-center relative z-10">
+        <div className="pt-6 border-t border-[#F1E4C6]/60 dark:border-[#4A3B2A]/40">
+          <p className="text-xs font-mono tracking-widest text-[#221A12]/40 dark:text-[#F7F0E3]/30 uppercase">
+            AP© | July 2026
+          </p>
+        </div>
+      </footer>
+
       {/* --- FLOATING MODALS & OVERLAYS --- */}
 
       {/* Detailed View Modal */}
