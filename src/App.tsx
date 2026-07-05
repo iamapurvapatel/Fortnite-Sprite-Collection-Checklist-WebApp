@@ -9,6 +9,7 @@ import { SpriteMatrix } from './components/SpriteMatrix';
 import { SpriteDetailModal } from './components/SpriteDetailModal';
 import { SettingsPanel } from './components/SettingsPanel';
 import { ProceduralSprite } from './components/ProceduralSprite';
+import { BackgroundParticles } from './components/BackgroundParticles';
 import * as Icons from 'lucide-react';
 
 export default function App() {
@@ -104,6 +105,8 @@ export default function App() {
       console.error('Could not save view mode preference to localStorage', err);
     }
   }, [viewMode]);
+
+
 
   // --- IMAGE POSTER EXPORT ENGINE (1080x1080 1:1) ---
   const handleExportImage = async () => {
@@ -527,6 +530,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FFFDFA] dark:bg-[#16120E] dark:bg-gradient-to-tr dark:from-[#16120E] dark:via-[#1D1813] dark:to-[#16120E] transition-colors duration-500 relative overflow-hidden pb-12 font-sans text-[#221A12] dark:text-[#F7F0E3]">
+      {/* Dynamic Background Particles */}
+      <BackgroundParticles darkMode={darkMode} />
+
       {/* Decorative backdrop blobs */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#F5B335]/5 dark:bg-[#5C4017]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-[#FFD978]/5 dark:bg-[#C98B1F]/10 blur-[130px] rounded-full pointer-events-none -z-10" />

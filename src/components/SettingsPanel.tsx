@@ -193,6 +193,8 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
             )}
           </div>
 
+
+
           {/* Factory Reset Danger Zone */}
           <div className="space-y-3 pt-4 border-t border-[#F1E4C6] dark:border-[#4A3B2A]">
             <h4 className="text-xs font-bold uppercase tracking-wider text-rose-500">
