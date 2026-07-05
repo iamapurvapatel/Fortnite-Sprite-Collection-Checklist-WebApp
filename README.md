@@ -1,16 +1,6 @@
-# ✨ MySprites 🧚‍♂️✨
+# ✨ MySprites✨
 
 > A highly polished, interactive, and beautifully animated **Fortnite Sprite Collection Checklist** companion app! Powered by a custom-crafted **Honey Glow Design System** 🍯 and dynamic procedurally-rendered vector graphics.
-
----
-
-## 🌟 Quick Preview & Interactive Checklist
-*Can you collect them all? Use this README checklist to plan your next hunt, then check them off in the live app!*
-
-- [ ] 🥚 **Common Sprites** — Simple yet lovable forest companions
-- [ ] 🔷 **Rare Sprites** — Radiant elemental helpers with extra flair
-- [ ] 💜 **Epic Sprites** — Mystical defenders shrouded in magical particles
-- [ ] 👑 **Legendary Sprites** — Majestic, crowned monarchs of the Sprite realm!
 
 ---
 
@@ -48,25 +38,6 @@
 │   │   └── 📄 sprites.ts          # Complete Sprite list with metadata
 │   ├── 📄 types.ts           # Shared TypeScript interfaces & types
 │   └── 📄 App.tsx            # Main application coordinator & state engine
-```
-
----
-
-## 🎮 How to Run Locally
-
-### 1️⃣ Clone and Install Dependencies
-```bash
-npm install
-```
-
-### 2️⃣ Run the Development Server
-```bash
-npm run dev
-```
-
-### 3️⃣ Build for Production
-```bash
-npm run build
 ```
 
 ---
