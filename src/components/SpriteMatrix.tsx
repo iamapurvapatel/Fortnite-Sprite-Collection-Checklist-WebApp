@@ -1,44 +1,27 @@
 import React from 'react';
 import { Sprite } from '../types';
 import { ProceduralSprite } from './ProceduralSprite';
+import { CUSTOM_FAMILY_ORDER } from '../data/sprites';
 import * as Icons from 'lucide-react';
 
 interface SpriteMatrixProps {
   sprites: Sprite[];
   obtainedIds: string[];
+  masteredIds?: string[];
   favoriteIds: string[];
   onToggleObtained: (id: string) => void;
+  onToggleMastered?: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   onOpenDetail: (sprite: Sprite) => void;
 }
 
-// Canonical family order from sprites.ts
-const CUSTOM_FAMILY_ORDER = [
-  'Water',
-  'Earth',
-  'Fire',
-  'Duck',
-  'Ghost',
-  'Dream',
-  'Demon',
-  'Punk',
-  'King',
-  'Burnt Peanut',
-  'Zero Point',
-  'Fishy',
-  'Striker',
-  'Aura',
-  'Boss',
-  'Grim',
-  'Air',
-  'Seven',
-];
-
 export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
   sprites,
   obtainedIds,
+  masteredIds = [],
   favoriteIds,
   onToggleObtained,
+  onToggleMastered,
   onToggleFavorite,
   onOpenDetail,
 }) => {
@@ -66,23 +49,24 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
           </h2>
           
           {/* Double Border Framing with Honey Glow Colors */}
-          <div className="border-t border-b border-[#F1E4C6] dark:border-zinc-800/80 py-3">
+          <div className="border-t border-b border-[#F1E4C6]/20 dark:border-zinc-800/20 py-3 opacity-90">
             <div className="grid grid-cols-12 gap-2 items-center text-center">
               {/* Row Label Spacer */}
-              <div className="col-span-3 sm:col-span-4 text-left">
+              <div className="col-span-3 sm:col-span-2 text-left">
                 <span className="font-mono text-[10px] tracking-widest text-[#A38F72] dark:text-zinc-500 uppercase font-extrabold">
                   Sprite Family
                 </span>
               </div>
               
-              {/* The 6 Variant Columns */}
-              <div className="col-span-9 sm:col-span-8 grid grid-cols-6 gap-3 sm:gap-4 md:gap-5 font-mono text-xs tracking-wider font-extrabold text-[#221A12] dark:text-zinc-300 uppercase text-center">
+              {/* The 7 Variant Columns */}
+              <div className="col-span-9 sm:col-span-10 grid grid-cols-7 gap-2 sm:gap-3 md:gap-4 font-mono text-xs tracking-wider font-extrabold text-[#221A12] dark:text-zinc-300 uppercase text-center">
                 <div>Basic</div>
                 <div>Gold</div>
                 <div>Gummy</div>
                 <div>Galaxy</div>
                 <div>Holofoil</div>
                 <div>Gem</div>
+                <div>Cube</div>
               </div>
             </div>
           </div>
@@ -101,6 +85,7 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
             const galaxySprite = familySprites.find((s) => s.variant === 'Galaxy');
             const holofoilSprite = familySprites.find((s) => s.variant === 'Holofoil');
             const gemSprite = familySprites.find((s) => s.variant === 'Gem');
+            const cubeSprite = familySprites.find((s) => s.variant === 'Cube');
 
             // Calculate obtained progress for this family
             const totalFamilySprites = familySprites.length;
@@ -110,10 +95,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
             return (
               <div
                 key={familyName}
-                className="flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-2 items-stretch sm:items-center p-3 sm:p-3 rounded-2xl border border-[#F1E4C6] dark:border-zinc-800/40 bg-white/50 dark:bg-white/[0.01] hover:bg-[#FFF6E6] dark:hover:bg-zinc-900/25 transition-all duration-300"
+                className="flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-2 items-stretch sm:items-center p-3 sm:p-3 rounded-2xl border border-transparent dark:border-transparent bg-white/[0.45] dark:bg-white/[0.005] hover:bg-[#FFF6E6]/60 dark:hover:bg-zinc-900/15 shadow-[0_4px_16px_-4px_rgba(180,120,20,0.03)] dark:shadow-none transition-all duration-300"
               >
                 {/* Left Column: Family Name & Progress Badge (Pinned / Left-Aligned) */}
-                <div className="col-span-3 sm:col-span-4 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-center text-left pb-2 sm:pb-0 border-b border-[#F1E4C6]/30 sm:border-b-0">
+                <div className="col-span-3 sm:col-span-2 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-center text-left pb-2 sm:pb-0 border-b border-transparent sm:border-b-0">
                   <span className="font-sans font-black text-sm sm:text-base text-[#221A12] dark:text-zinc-200 tracking-tight flex items-center gap-1.5 truncate">
                     {familyName}
                     {isFamilyComplete && (
@@ -126,13 +111,15 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                 </div>
 
                 {/* Right Columns: Interactive Slot Grid - Horizontally Scrollable on Mobile, Grid on Desktop */}
-                <div className="col-span-9 sm:col-span-8 flex sm:grid sm:grid-cols-6 gap-3 sm:gap-4 md:gap-5 items-center overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-none sm:scrollbar-default -mx-3 px-3 sm:mx-0 sm:px-0">
+                <div className="col-span-9 sm:col-span-10 flex sm:grid sm:grid-cols-7 gap-2 sm:gap-3 md:gap-4 items-center overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-none sm:scrollbar-default -mx-3 px-3 sm:mx-0 sm:px-0">
                   {/* 1. Basic Slot */}
                   <VariantSlot
                     sprite={basicSprite}
                     obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
                     favoriteIds={favoriteIds}
                     onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
                     onToggleFavorite={onToggleFavorite}
                     onOpenDetail={onOpenDetail}
                   />
@@ -141,8 +128,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                   <VariantSlot
                     sprite={goldSprite}
                     obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
                     favoriteIds={favoriteIds}
                     onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
                     onToggleFavorite={onToggleFavorite}
                     onOpenDetail={onOpenDetail}
                   />
@@ -151,8 +140,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                   <VariantSlot
                     sprite={gummySprite}
                     obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
                     favoriteIds={favoriteIds}
                     onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
                     onToggleFavorite={onToggleFavorite}
                     onOpenDetail={onOpenDetail}
                   />
@@ -161,8 +152,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                   <VariantSlot
                     sprite={galaxySprite}
                     obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
                     favoriteIds={favoriteIds}
                     onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
                     onToggleFavorite={onToggleFavorite}
                     onOpenDetail={onOpenDetail}
                   />
@@ -171,8 +164,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                   <VariantSlot
                     sprite={holofoilSprite}
                     obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
                     favoriteIds={favoriteIds}
                     onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
                     onToggleFavorite={onToggleFavorite}
                     onOpenDetail={onOpenDetail}
                   />
@@ -181,8 +176,22 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                   <VariantSlot
                     sprite={gemSprite}
                     obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
                     favoriteIds={favoriteIds}
                     onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
+                    onToggleFavorite={onToggleFavorite}
+                    onOpenDetail={onOpenDetail}
+                  />
+
+                  {/* 7. Cube Slot */}
+                  <VariantSlot
+                    sprite={cubeSprite}
+                    obtainedIds={obtainedIds}
+                    masteredIds={masteredIds}
+                    favoriteIds={favoriteIds}
+                    onToggleObtained={onToggleObtained}
+                    onToggleMastered={onToggleMastered}
                     onToggleFavorite={onToggleFavorite}
                     onOpenDetail={onOpenDetail}
                   />
@@ -201,8 +210,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
 interface VariantSlotProps {
   sprite: Sprite | undefined;
   obtainedIds: string[];
+  masteredIds?: string[];
   favoriteIds: string[];
   onToggleObtained: (id: string) => void;
+  onToggleMastered?: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   onOpenDetail: (sprite: Sprite) => void;
   compact?: boolean;
@@ -211,8 +222,10 @@ interface VariantSlotProps {
 const VariantSlot: React.FC<VariantSlotProps> = ({
   sprite,
   obtainedIds,
+  masteredIds = [],
   favoriteIds,
   onToggleObtained,
+  onToggleMastered,
   onToggleFavorite,
   onOpenDetail,
   compact = false,
@@ -274,24 +287,30 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
     onToggleObtained(id);
   };
 
+  const isMastered = masteredIds.includes(id);
+
   return (
     <div
       onTouchStart={isComingSoon ? undefined : handleTouchStart}
       onTouchEnd={isComingSoon ? undefined : handleTouchEnd}
       onTouchMove={isComingSoon ? undefined : handleTouchMove}
       onClick={handleSlotClick}
-      className={`group relative aspect-square rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center overflow-hidden cursor-pointer select-none w-16 sm:w-full flex-shrink-0 ${
+      className={`group relative aspect-[4/5] sm:aspect-square rounded-xl sm:rounded-2xl border border-transparent transition-all duration-300 flex flex-col items-center justify-center overflow-hidden cursor-pointer select-none w-[105px] sm:w-full flex-shrink-0 ${
         compact ? 'p-0.5 sm:p-1' : 'p-1 sm:p-1.5'
       } ${
         isComingSoon
-          ? 'bg-[#FFE4B5]/5 dark:bg-zinc-900/30 border-[#F1E4C6]/40 dark:border-zinc-800/20 opacity-40 cursor-not-allowed'
+          ? 'bg-[#FFE4B5]/3 dark:bg-zinc-900/10 opacity-35 cursor-not-allowed'
+          : isMastered
+          ? 'bg-white dark:bg-zinc-900/55 hover:border-amber-500/20 shadow-[0_4px_12px_rgba(245,158,11,0.12)]'
           : isObtained
-          ? 'bg-white dark:bg-zinc-900/50 border-[#F59E0B]/30 dark:border-white/10 hover:border-[#F59E0B] dark:hover:border-white/20 active:scale-[0.96]'
-          : 'bg-[#FFFDFA] dark:bg-white/[0.02] border-[#F1E4C6] dark:border-white/5 hover:bg-[#FFF6E6] dark:hover:bg-white/[0.05] hover:border-[#F59E0B]/50 dark:hover:border-white/15 active:scale-[0.96]'
+          ? 'bg-white dark:bg-zinc-900/55 border-zinc-100/30 dark:border-zinc-850/20'
+          : 'bg-[#FFFDFA]/60 dark:bg-white/[0.01] hover:bg-[#FFF6E6]/40 dark:hover:bg-white/[0.03]'
       }`}
       style={{
-        boxShadow: !isComingSoon && isObtained
-          ? `0 6px 16px -8px ${features.glowColor}, inset 0 1px 1px rgba(255,255,255,0.15)`
+        boxShadow: !isComingSoon && isMastered
+          ? `0 6px 18px -4px rgba(245, 158, 11, 0.22), inset 0 1px 1px rgba(251,191,36,0.12)`
+          : !isComingSoon && isObtained
+          ? `0 6px 16px -8px ${features.glowColor}, inset 0 1px 1px rgba(255,255,255,0.12)`
           : undefined,
       }}
       title={`${name} (${variant})`}
@@ -300,31 +319,31 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
       {!compact && (
         <span className="absolute top-1 left-1.5 text-[7px] sm:text-[9px] font-mono text-[#A38F72] dark:text-zinc-500 font-bold opacity-75 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
           #{id.replace(/[a-z]/gi, '').padStart(3, '0')}
-          {isObtained && !isComingSoon && (
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          {isMastered ? (
+            <Icons.Sparkle className="w-2.5 h-2.5 text-amber-500 fill-amber-500 animate-pulse shrink-0" />
+          ) : isObtained && !isComingSoon && (
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
           )}
         </span>
       )}
 
       {/* Top right actions row */}
       {!isComingSoon && (
-        <div className="absolute top-1 right-1 flex items-center gap-0.5 z-30">
-          {/* Inspect Button (Disabled for now) */}
-
-          {/* Favorite Button (Always Available) */}
+        <div className="absolute top-1 right-1 flex items-center gap-0.5 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* Mastered Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onToggleFavorite(id);
+              if (onToggleMastered) onToggleMastered(id);
             }}
             className={`flex items-center justify-center w-5 h-5 rounded border shadow-xs transition-all cursor-pointer ${
-              isFavorite
-                ? 'bg-[#FFE4B5]/60 dark:bg-[#F5B335]/20 border-[#F5B335] dark:border-[#F5B335]/50 text-[#F5B335] dark:text-[#FFD977]'
-                : 'bg-[#FFFDFA]/40 dark:bg-[#1D1813]/40 hover:bg-[#FFE4B5]/40 dark:hover:bg-[#F5B335]/10 text-[#A38F72] dark:text-[#9F8F75] hover:text-[#F5B335] dark:hover:text-[#FFD977] border-[#F1E4C6]/50 dark:border-[#4A3B2A]/50 hover:border-[#F5B335]/30'
+              isMastered
+                ? 'bg-amber-500/20 dark:bg-amber-500/30 text-amber-500 dark:text-amber-400 border-amber-500/30'
+                : 'bg-[#FFFDFA]/80 dark:bg-[#1D1813]/60 border-transparent hover:bg-[#FFE4B5]/60 dark:hover:bg-[#F5B335]/20 text-[#A38F72] dark:text-[#9F8F75] hover:text-amber-500 dark:hover:text-amber-400'
             }`}
-            title={isFavorite ? "Remove Favorite" : "Favorite Sprite"}
+            title={isMastered ? "Unmark Mastered" : "Mark as Mastered"}
           >
-            <Icons.Star className={`w-2.5 h-2.5 ${isFavorite ? 'fill-[#F5B335] dark:fill-[#FFD977]' : ''}`} />
+            <Icons.Sparkles className={`w-2.5 h-2.5 ${isMastered ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : ''}`} />
           </button>
         </div>
       )}
@@ -336,12 +355,14 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
 
       {/* Central Sprite Art */}
       {!isComingSoon && (
-        <div className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110 pb-2 ${
-          compact ? 'w-7 h-7 sm:w-9 sm:h-9' : 'w-9 h-9 sm:w-11 sm:h-11'
-        } ${
-          !isObtained ? 'opacity-30 filter grayscale-[15%] dark:opacity-25' : ''
-        }`}>
-          <ProceduralSprite features={features} obtained={isObtained} size={compact ? "xs" : "sm"} />
+        <div
+          className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110 pb-2 ${
+            compact ? 'w-8 h-8 sm:w-10 sm:h-10' : 'w-14 h-14 sm:w-20 sm:h-20'
+          } ${
+            !isObtained ? 'opacity-30 filter grayscale-[15%] dark:opacity-25' : ''
+          }`}
+        >
+          <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size={compact ? "xs" : "md"} />
         </div>
       )}
 
@@ -356,7 +377,7 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
 // Clean Placeholder for Non-existent slots
 const EmptySlot: React.FC = () => {
   return (
-    <div className="w-16 sm:w-full flex-shrink-0 aspect-square rounded-xl sm:rounded-2xl border border-dashed border-[#F1E4C6]/60 dark:border-zinc-800/30 bg-transparent flex items-center justify-center opacity-25 pointer-events-none select-none">
+    <div className="w-[105px] sm:w-full flex-shrink-0 aspect-[4/5] sm:aspect-square rounded-xl sm:rounded-2xl border border-transparent bg-[#FFE4B5]/2 dark:bg-white/[0.005] flex items-center justify-center opacity-25 pointer-events-none select-none">
       <span className="text-[10px] font-mono font-bold text-[#A38F72] dark:text-zinc-600">-</span>
     </div>
   );

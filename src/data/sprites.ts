@@ -19,6 +19,9 @@ export const CUSTOM_FAMILY_ORDER = [
   'Grim',
   'Air',
   'Seven',
+  'Batman',
+  'Pollo',
+  'Vini Jr.',
 ];
 
 export const VARIANT_ORDER = [
@@ -28,6 +31,7 @@ export const VARIANT_ORDER = [
   'Galaxy',
   'Holofoil',
   'Gem',
+  'Cube',
 ];
 
 export const CATEGORIES: CategoryDetail[] = [
@@ -85,6 +89,15 @@ export const CATEGORIES: CategoryDetail[] = [
     gradientFrom: 'from-emerald-400/20',
     gradientTo: 'to-blue-600/20',
   },
+  {
+    id: 'Cube',
+    name: 'Cube Collection',
+    iconName: 'Box',
+    description: 'Blocky 3D voxel-style cubic sprites with structured geometric form.',
+    themeColor: 'purple',
+    gradientFrom: 'from-purple-500/20',
+    gradientTo: 'to-indigo-500/20',
+  },
 ];
 
 // Base Feature templates to ensure procedural fallbacks look premium
@@ -107,6 +120,9 @@ const BASE_FEATURES = {
   Aura: { shape: 'cube' as const, eyes: 'star' as const, bodyColor: '#0f172a', accentColor: '#c084fc', glowColor: 'rgba(168, 85, 247, 0.5)', particles: 'orbit' as const },
   Air: { shape: 'cloud' as const, eyes: 'cute' as const, bodyColor: '#f8fafc', accentColor: '#38bdf8', glowColor: 'rgba(186, 230, 253, 0.4)', particles: 'float' as const },
   Seven: { shape: 'ghost' as const, eyes: 'wink' as const, bodyColor: '#ec4899', accentColor: '#fbcfe8', glowColor: 'rgba(236, 72, 153, 0.4)', particles: 'orbit' as const },
+  Batman: { shape: 'ghost' as const, eyes: 'cool' as const, bodyColor: '#18181b', accentColor: '#facc15', glowColor: 'rgba(250, 204, 21, 0.5)', particles: 'orbit' as const, accessory: 'none' as const },
+  Pollo: { shape: 'round' as const, eyes: 'cute' as const, bodyColor: '#fef08a', accentColor: '#ef4444', glowColor: 'rgba(254, 240, 138, 0.5)', particles: 'sparkle' as const, accessory: 'none' as const },
+  ViniJr: { shape: 'round' as const, eyes: 'star' as const, bodyColor: '#2563eb', accentColor: '#facc15', glowColor: 'rgba(37, 99, 235, 0.5)', particles: 'sparkle' as const, accessory: 'none' as const },
 };
 
 const RAW_SPRITES: Sprite[] = [
@@ -280,7 +296,6 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Basic',
     description: 'A gentle breeze cloud sprite with a pure white body. A soft pastel blue spiral emblem glows on its soft chest.',
     features: { ...BASE_FEATURES.Air, accessory: 'none', imageUrl: '/images/Basic/018 Air Sprite.png' },
-    unreleased: true,
   },
   {
     id: 'b18',
@@ -291,7 +306,36 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Basic',
     description: 'A playful pink specter covered by a ghostly sheet. Its glowing magenta eyes have a hypnotic swirl pattern.',
     features: { ...BASE_FEATURES.Seven, accessory: 'none', imageUrl: '/images/Basic/017 Seven Sprite.png' },
-    unreleased: true,
+  },
+  {
+    id: 'b19',
+    name: 'Batman',
+    category: 'Basic',
+    number: '#019',
+    rarity: 'Legendary',
+    variant: 'Basic',
+    description: 'A vigilant shadow knight sprite clad in a dark cowl with a glowing yellow bat crest. Protects the city from dusk till dawn.',
+    features: { ...BASE_FEATURES.Batman, accessory: 'none', imageUrl: '/images/Basic/00 Batman Sprite.png' },
+  },
+  {
+    id: 'b20',
+    name: 'Pollo',
+    category: 'Basic',
+    number: '#020',
+    rarity: 'Rare',
+    variant: 'Basic',
+    description: 'A vibrant yellow chicken sprite with a fiery red crest and a cheerful strut. Always ready to wake up the valley.',
+    features: { ...BASE_FEATURES.Pollo, accessory: 'none', imageUrl: '/images/Basic/019 Pollo Sprite.png' },
+  },
+  {
+    id: 'b21',
+    name: 'Vini Jr.',
+    category: 'Basic',
+    number: '#021',
+    rarity: 'Epic',
+    variant: 'Basic',
+    description: 'A star football winger sprite clad in a brilliant royal blue and yellow jersey. Celebrates every victory with energetic samba flair.',
+    features: { ...BASE_FEATURES.ViniJr, accessory: 'none', imageUrl: '/images/Basic/020 Vini Jr Sprite.png' },
   },
 
   // --- GOLD COLLECTION ---
@@ -454,7 +498,6 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Gold',
     description: 'A light, golden cloud sprite drifting serenely and humming with wind melodies.',
     features: { ...BASE_FEATURES.Air, bodyColor: '#fef08a', accentColor: '#ffffff', glowColor: 'rgba(253, 224, 71, 0.5)', accessory: 'none', imageUrl: '/images/Gold/Air Sprite.png' },
-    unreleased: true,
   },
   {
     id: 'gld17',
@@ -465,7 +508,16 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Gold',
     description: 'A legendary golden specter with swirling gold-leaf vortexes in its eyes.',
     features: { ...BASE_FEATURES.Seven, bodyColor: '#fbbf24', accentColor: '#fde047', glowColor: 'rgba(245, 158, 11, 0.5)', accessory: 'none', imageUrl: '/images/Gold/Seven Sprite.png' },
-    unreleased: true,
+  },
+  {
+    id: 'gld18',
+    name: 'Batman',
+    category: 'Gold',
+    number: '#036',
+    rarity: 'Legendary',
+    variant: 'Gold',
+    description: 'A luxurious solid gold vigilante sprite with a gleaming cowl and golden bat emblem.',
+    features: { ...BASE_FEATURES.Batman, bodyColor: '#fbbf24', accentColor: '#fef08a', glowColor: 'rgba(245, 158, 11, 0.6)', accessory: 'none', imageUrl: '/images/Gold/Batman Sprite.png' },
   },
 
   // --- GUMMY COLLECTION ---
@@ -628,7 +680,6 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Gummy',
     description: 'A soft marshmallow cloud sprite, light, airy, and smelling of vanilla.',
     features: { ...BASE_FEATURES.Air, bodyColor: '#fdf2f8', accentColor: '#f472b6', glowColor: 'rgba(244, 63, 94, 0.5)', accessory: 'none', imageUrl: '/images/Gummy/Air Sprite.png' },
-    unreleased: true,
   },
   {
     id: 'gum17',
@@ -639,7 +690,16 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Gummy',
     description: 'A swirling sour-pink bubblegum specter with delicious strawberry eyes.',
     features: { ...BASE_FEATURES.Seven, bodyColor: '#ec4899', accentColor: '#fbcfe8', glowColor: 'rgba(236, 72, 153, 0.5)', accessory: 'none', imageUrl: '/images/Gummy/Seven Sprite.png' },
-    unreleased: true,
+  },
+  {
+    id: 'gum18',
+    name: 'Batman',
+    category: 'Gummy',
+    number: '#053',
+    rarity: 'Legendary',
+    variant: 'Gummy',
+    description: 'A squishy black-raspberry gelatin bat knight with a translucent glowing yellow heart.',
+    features: { ...BASE_FEATURES.Batman, bodyColor: '#27272a', accentColor: '#fde047', glowColor: 'rgba(250, 204, 21, 0.6)', accessory: 'none', imageUrl: '/images/Gummy/Batman Sprite.png' },
   },
 
   // --- GALAXY COLLECTION ---
@@ -802,7 +862,6 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Galaxy',
     description: 'A cosmic wind sprite consisting of pure solar cloud winds and nebula dust.',
     features: { ...BASE_FEATURES.Air, bodyColor: '#312e81', accentColor: '#bfdbfe', glowColor: 'rgba(56, 189, 248, 0.6)', accessory: 'none', imageUrl: '/images/Galaxy/Air Sprite.png' },
-    unreleased: true,
   },
   {
     id: 'gal17',
@@ -813,7 +872,16 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Galaxy',
     description: 'A galaxy specter spinning and looping with gorgeous cosmic vortexes.',
     features: { ...BASE_FEATURES.Seven, bodyColor: '#4f46e5', accentColor: '#fbcfe8', glowColor: 'rgba(236, 72, 153, 0.6)', accessory: 'none', imageUrl: '/images/Galaxy/Seven Sprite.png' },
-    unreleased: true,
+  },
+  {
+    id: 'gal18',
+    name: 'Batman',
+    category: 'Galaxy',
+    number: '#070',
+    rarity: 'Legendary',
+    variant: 'Galaxy',
+    description: 'A dark cosmic knight enveloped in swirling purple-black nebula stars and galactic starlight.',
+    features: { ...BASE_FEATURES.Batman, bodyColor: '#09090b', accentColor: '#c084fc', glowColor: 'rgba(192, 132, 252, 0.7)', accessory: 'none', imageUrl: '/images/Galaxy/Batman Sprite.png' },
   },
 
   // --- HOLOFOIL COLLECTION ---
@@ -886,7 +954,6 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Holofoil',
     description: 'A shiny chrome cloud sprite displaying a breathtaking multi-colored halo.',
     features: { ...BASE_FEATURES.Air, bodyColor: '#e2e8f0', accentColor: '#ff007f', glowColor: 'rgba(236, 72, 153, 0.6)', accessory: 'none', imageUrl: '/images/Holofoil/Air Sprite.png' },
-    unreleased: true,
   },
   {
     id: 'hol8',
@@ -897,7 +964,16 @@ const RAW_SPRITES: Sprite[] = [
     variant: 'Holofoil',
     description: 'A gorgeous, light-bending specter with beautiful prism-colored swirls.',
     features: { ...BASE_FEATURES.Seven, bodyColor: '#a855f7', accentColor: '#06b6d4', glowColor: 'rgba(168, 85, 247, 0.6)', accessory: 'none', imageUrl: '/images/Holofoil/Seven Sprite.png' },
-    unreleased: true,
+  },
+  {
+    id: 'hol9',
+    name: 'Batman',
+    category: 'Holofoil',
+    number: '#081',
+    rarity: 'Legendary',
+    variant: 'Holofoil',
+    description: 'An iridescent prismatic hologram vigilante displaying shifting rainbow light across its dark cowl.',
+    features: { ...BASE_FEATURES.Batman, bodyColor: '#1e293b', accentColor: '#22d3ee', glowColor: 'rgba(34, 211, 238, 0.7)', accessory: 'none', imageUrl: '/images/Holofoil/Batman Sprite.png' },
   },
 
   // --- GEM COLLECTION ---
@@ -932,6 +1008,16 @@ const RAW_SPRITES: Sprite[] = [
     features: { ...BASE_FEATURES.Duck, bodyColor: '#ca8a04', accentColor: '#fef08a', glowColor: 'rgba(202, 138, 4, 0.6)', accessory: 'none', imageUrl: '/images/Gem/Duck Sprite.png' },
   },
   {
+    id: 'gem4',
+    name: 'Ghost',
+    category: 'Gem',
+    number: '#081',
+    rarity: 'Mythic',
+    variant: 'Gem',
+    description: 'A crystalline shadow specter carved from rare translucent dark sapphire.',
+    features: { ...BASE_FEATURES.Ghost, bodyColor: '#0f172a', accentColor: '#38bdf8', glowColor: 'rgba(56, 189, 248, 0.7)', accessory: 'none', imageUrl: '/images/Gem/Ghost Sprite.png' },
+  },
+  {
     id: 'gem5',
     name: 'Demon',
     category: 'Gem',
@@ -961,6 +1047,78 @@ const RAW_SPRITES: Sprite[] = [
     description: 'A raw purple amethyst cluster releasing warm, sparkling purple beams.',
     features: { ...BASE_FEATURES.Aura, bodyColor: '#6d28d9', accentColor: '#ddd6fe', glowColor: 'rgba(109, 40, 217, 0.7)', accessory: 'none', imageUrl: '/images/Gem/Aura Sprite.png' },
   },
+
+  // --- CUBE COLLECTION ---
+  {
+    id: 'cube1',
+    name: 'Batman',
+    category: 'Cube',
+    number: '#091',
+    rarity: 'Legendary',
+    variant: 'Cube',
+    description: 'A blocky 3D voxel vigilante sprite built with a dark cubic cowl and glowing yellow bat buckle.',
+    features: { ...BASE_FEATURES.Batman, bodyColor: '#18181b', accentColor: '#facc15', glowColor: 'rgba(250, 204, 21, 0.6)', accessory: 'none', imageUrl: '/images/Cube/Batman Sprite.png' },
+  },
+  {
+    id: 'cube2',
+    name: 'Boss',
+    category: 'Cube',
+    number: '#092',
+    rarity: 'Legendary',
+    variant: 'Cube',
+    description: 'A massive 3D voxel corporate tycoon sprite crafted with geometric leather and gold accents.',
+    features: { ...BASE_FEATURES.Boss, bodyColor: '#451a03', accentColor: '#f97316', glowColor: 'rgba(249, 115, 22, 0.5)', accessory: 'none', imageUrl: '/images/Cube/Boss Sprite.png' },
+  },
+  {
+    id: 'cube3',
+    name: 'Dream',
+    category: 'Cube',
+    number: '#093',
+    rarity: 'Legendary',
+    variant: 'Cube',
+    description: 'A blocky cloud-pillow voxel sprite floating peacefully in soft geometric sleep.',
+    features: { ...BASE_FEATURES.Dream, bodyColor: '#64748b', accentColor: '#cbd5e1', glowColor: 'rgba(100, 116, 139, 0.5)', accessory: 'none', imageUrl: '/images/Cube/Dream Sprite.png' },
+  },
+  {
+    id: 'cube4',
+    name: 'Earth',
+    category: 'Cube',
+    number: '#094',
+    rarity: 'Rare',
+    variant: 'Cube',
+    description: 'A structured voxel mossy stone guardian sprite built with sharp cubic geometry.',
+    features: { ...BASE_FEATURES.Earth, bodyColor: '#15803d', accentColor: '#86efac', glowColor: 'rgba(34, 197, 94, 0.5)', accessory: 'none', imageUrl: '/images/Cube/Earth Sprite.png' },
+  },
+  {
+    id: 'cube5',
+    name: 'Fire',
+    category: 'Cube',
+    number: '#095',
+    rarity: 'Rare',
+    variant: 'Cube',
+    description: 'A fiery 3D voxel magma sprite emitting pixelated heatwaves from its angular core.',
+    features: { ...BASE_FEATURES.Fire, bodyColor: '#ef4444', accentColor: '#fca5a5', glowColor: 'rgba(239, 68, 68, 0.5)', accessory: 'none', imageUrl: '/images/Cube/Fire Sprite.png' },
+  },
+  {
+    id: 'cube6',
+    name: 'Fishy',
+    category: 'Cube',
+    number: '#096',
+    rarity: 'Rare',
+    variant: 'Cube',
+    description: 'A playful orange block fish sprite swimming in angular voxel currents.',
+    features: { ...BASE_FEATURES.Fishy, bodyColor: '#f97316', accentColor: '#fdba74', glowColor: 'rgba(249, 115, 22, 0.5)', accessory: 'none', imageUrl: '/images/Cube/Fishy Sprite.png' },
+  },
+  {
+    id: 'cube7',
+    name: 'Punk',
+    category: 'Cube',
+    number: '#097',
+    rarity: 'Legendary',
+    variant: 'Cube',
+    description: 'A cybernetic voxel rebel sprite with sharp neon edges and an angular mohawk.',
+    features: { ...BASE_FEATURES.Punk, bodyColor: '#1e293b', accentColor: '#f472b6', glowColor: 'rgba(236, 72, 153, 0.5)', accessory: 'none', imageUrl: '/images/Cube/Punk Sprite.png' },
+  },
 ];
 
 const NAME_TO_RARITY: Record<string, SpriteRarity> = {
@@ -969,23 +1127,26 @@ const NAME_TO_RARITY: Record<string, SpriteRarity> = {
   'Earth': 'Rare',
   'Air': 'Rare',
   'Fishy': 'Rare',
+  'Pollo': 'Rare',
   'Duck': 'Epic',
   'King': 'Epic',
   'Ghost': 'Epic',
   'Demon': 'Epic',
   'Striker': 'Epic',
+  'Vini Jr.': 'Epic',
   'Dream': 'Legendary',
   'Boss': 'Legendary',
   'Punk': 'Legendary',
   'Aura': 'Legendary',
   'Seven': 'Legendary',
+  'Batman': 'Legendary',
   'Grim': 'Mythic',
   'Burnt Peanut': 'Mythic',
   'Zero Point': 'Mythic',
 };
 
 export const SPRITES: Sprite[] = RAW_SPRITES.map(s => {
-  const isSpecial = ['Gold', 'Galaxy', 'Gummy', 'Holofoil', 'Gem'].includes(s.variant) || ['Gold', 'Galaxy', 'Gummy', 'Holofoil', 'Gem'].includes(s.category);
+  const isSpecial = ['Gold', 'Galaxy', 'Gummy', 'Holofoil', 'Gem', 'Cube'].includes(s.variant) || ['Gold', 'Galaxy', 'Gummy', 'Holofoil', 'Gem', 'Cube'].includes(s.category);
   return {
     ...s,
     rarity: isSpecial ? 'Special' : (NAME_TO_RARITY[s.name] || s.rarity)
@@ -1005,51 +1166,51 @@ export const INITIAL_ACHIEVEMENTS = [
   {
     id: 'ach_basic_complete',
     title: 'Valley Discoverer',
-    description: 'Complete the entire Basic Collection (16 released).',
+    description: 'Complete the entire Basic Collection (22 released).',
     iconName: 'Map',
     unlocked: false,
     progress: 0,
-    maxProgress: 16,
+    maxProgress: 22,
     category: 'Basic',
   },
   {
     id: 'ach_gold_complete',
     title: 'Midas Touch',
-    description: 'Complete the entire Gold Collection (15 released).',
+    description: 'Complete the entire Gold Collection (19 released).',
     iconName: 'Crown',
     unlocked: false,
     progress: 0,
-    maxProgress: 15,
+    maxProgress: 19,
     category: 'Gold',
   },
   {
     id: 'ach_gummy_complete',
     title: 'Candy Crush',
-    description: 'Complete the entire Gummy Collection (15 released).',
+    description: 'Complete the entire Gummy Collection (19 released).',
     iconName: 'Candy',
     unlocked: false,
     progress: 0,
-    maxProgress: 15,
+    maxProgress: 19,
     category: 'Gummy',
   },
   {
     id: 'ach_galaxy_complete',
     title: 'Stargazer',
-    description: 'Complete the entire Galaxy Collection (15 released).',
+    description: 'Complete the entire Galaxy Collection (19 released).',
     iconName: 'Orbit',
     unlocked: false,
     progress: 0,
-    maxProgress: 15,
+    maxProgress: 19,
     category: 'Galaxy',
   },
   {
     id: 'ach_holofoil_complete',
     title: 'Prismatic Master',
-    description: 'Complete the entire Holofoil Collection (6 released).',
+    description: 'Complete the entire Holofoil Collection (10 released).',
     iconName: 'Layers',
     unlocked: false,
     progress: 0,
-    maxProgress: 6,
+    maxProgress: 10,
     category: 'Holofoil',
   },
   {
@@ -1063,6 +1224,16 @@ export const INITIAL_ACHIEVEMENTS = [
     category: 'Gem',
   },
   {
+    id: 'ach_cube_complete',
+    title: 'Voxel Architect',
+    description: 'Complete the entire Cube Collection (7 released).',
+    iconName: 'Box',
+    unlocked: false,
+    progress: 0,
+    maxProgress: 7,
+    category: 'Cube',
+  },
+  {
     id: 'ach_rare_hunter',
     title: 'Elite Tracker',
     description: 'Obtain 5 Epic or better sprites.',
@@ -1074,10 +1245,10 @@ export const INITIAL_ACHIEVEMENTS = [
   {
     id: 'ach_completionist',
     title: 'Grand Master',
-    description: 'Collect all 74 released sprites in the database.',
+    description: 'Collect all 103 released sprites in the database.',
     iconName: 'Trophy',
     unlocked: false,
     progress: 0,
-    maxProgress: 74,
+    maxProgress: 103,
   },
 ];

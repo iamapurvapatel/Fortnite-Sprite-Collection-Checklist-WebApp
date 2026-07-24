@@ -17,18 +17,22 @@ export default function App() {
   const [checklist, setChecklist] = useState<ChecklistState>(() => {
     try {
       const savedObtained = localStorage.getItem('sprite_obtained');
+      const savedMastered = localStorage.getItem('sprite_mastered');
       const savedFavorites = localStorage.getItem('sprite_favorites');
       const savedNotes = localStorage.getItem('sprite_notes');
       const savedDates = localStorage.getItem('sprite_obtained_dates');
+      const savedMasteredDates = localStorage.getItem('sprite_mastered_dates');
 
       return {
         obtained: savedObtained ? JSON.parse(savedObtained) : [],
+        mastered: savedMastered ? JSON.parse(savedMastered) : [],
         favorites: savedFavorites ? JSON.parse(savedFavorites) : [],
         notes: savedNotes ? JSON.parse(savedNotes) : {},
         obtainedDates: savedDates ? JSON.parse(savedDates) : {},
+        masteredDates: savedMasteredDates ? JSON.parse(savedMasteredDates) : {},
       };
     } catch {
-      return { obtained: [], favorites: [], notes: {}, obtainedDates: {} };
+      return { obtained: [], mastered: [], favorites: [], notes: {}, obtainedDates: {}, masteredDates: {} };
     }
   });
 
@@ -58,10 +62,11 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'grid' | 'matrix'>(() => {
     try {
       const savedMode = localStorage.getItem('sprite_view_mode');
+      if (savedMode === 'grid') return 'grid';
       if (savedMode === 'matrix') return 'matrix';
-      return 'grid';
+      return 'matrix';
     } catch {
-      return 'grid';
+      return 'matrix';
     }
   });
 
@@ -74,9 +79,11 @@ export default function App() {
   useEffect(() => {
     try {
       localStorage.setItem('sprite_obtained', JSON.stringify(checklist.obtained));
+      localStorage.setItem('sprite_mastered', JSON.stringify(checklist.mastered));
       localStorage.setItem('sprite_favorites', JSON.stringify(checklist.favorites));
       localStorage.setItem('sprite_notes', JSON.stringify(checklist.notes));
       localStorage.setItem('sprite_obtained_dates', JSON.stringify(checklist.obtainedDates));
+      localStorage.setItem('sprite_mastered_dates', JSON.stringify(checklist.masteredDates));
     } catch (err) {
       console.error('Could not save checklist state to localStorage', err);
     }
@@ -234,7 +241,7 @@ export default function App() {
       // Subtitle
       ctx.fillStyle = darkMode ? '#9F8F75' : '#6B5E48';
       ctx.font = 'bold 16px "Inter", system-ui, sans-serif';
-      ctx.fillText(`${checkedSprites.length} of 74 Sprites Collected • Sprite Checklist`, 540, 96);
+      ctx.fillText(`${checkedSprites.length} of ${SPRITES.length} Sprites Collected • Sprite Checklist`, 540, 96);
 
       // Arrange dynamic grid
       const N = checkedSprites.length;
@@ -358,7 +365,44 @@ export default function App() {
         : [...prev.obtained, id];
 
       const newDates = { ...prev.obtainedDates };
+      const newMasteredDates = { ...prev.masteredDates };
+      let newMastered = prev.mastered || [];
+
       if (!isObtained) {
+        newDates[id] = new Date().toISOString();
+      } else {
+        delete newDates[id];
+        // Automatically remove from mastered if unobtained
+        newMastered = newMastered.filter((item) => item !== id);
+        delete newMasteredDates[id];
+      }
+
+      return {
+        ...prev,
+        obtained: newObtained,
+        mastered: newMastered,
+        obtainedDates: newDates,
+        masteredDates: newMasteredDates,
+      };
+    });
+  };
+
+  const handleToggleMastered = (id: string) => {
+    const sprite = SPRITES.find((s) => s.id === id);
+    if (sprite?.unreleased) return;
+
+    setChecklist((prev) => {
+      // Rule: can only master if already obtained
+      const isObtained = prev.obtained.includes(id);
+      if (!isObtained) return prev;
+
+      const isMastered = (prev.mastered || []).includes(id);
+      const newMastered = isMastered
+        ? (prev.mastered || []).filter((item) => item !== id)
+        : [...(prev.mastered || []), id];
+
+      const newDates = { ...prev.masteredDates };
+      if (!isMastered) {
         newDates[id] = new Date().toISOString();
       } else {
         delete newDates[id];
@@ -366,8 +410,8 @@ export default function App() {
 
       return {
         ...prev,
-        obtained: newObtained,
-        obtainedDates: newDates,
+        mastered: newMastered,
+        masteredDates: newDates,
       };
     });
   };
@@ -412,14 +456,18 @@ export default function App() {
   const handleResetProgress = () => {
     setChecklist({
       obtained: [],
+      mastered: [],
       favorites: [],
       notes: {},
       obtainedDates: {},
+      masteredDates: {},
     });
     localStorage.removeItem('sprite_obtained');
+    localStorage.removeItem('sprite_mastered');
     localStorage.removeItem('sprite_favorites');
     localStorage.removeItem('sprite_notes');
     localStorage.removeItem('sprite_obtained_dates');
+    localStorage.removeItem('sprite_mastered_dates');
   };
 
   // --- FILTERED & SORTED DATA ---
@@ -556,6 +604,7 @@ export default function App() {
         <StatsDashboard
           sprites={SPRITES}
           obtainedIds={checklist.obtained}
+          masteredIds={checklist.mastered}
         />
 
         {/* Filter Toolbar */}
@@ -595,9 +644,11 @@ export default function App() {
                   key={sprite.id}
                   sprite={sprite}
                   isObtained={checklist.obtained.includes(sprite.id)}
+                  isMastered={(checklist.mastered || []).includes(sprite.id)}
                   isFavorite={checklist.favorites.includes(sprite.id)}
                   obtainedDate={checklist.obtainedDates[sprite.id]}
                   onToggleObtained={handleToggleObtained}
+                  onToggleMastered={handleToggleMastered}
                   onToggleFavorite={handleToggleFavorite}
                   onOpenDetail={setSelectedSprite}
                 />
@@ -607,8 +658,10 @@ export default function App() {
             <SpriteMatrix
               sprites={filteredSprites}
               obtainedIds={checklist.obtained}
+              masteredIds={checklist.mastered}
               favoriteIds={checklist.favorites}
               onToggleObtained={handleToggleObtained}
+              onToggleMastered={handleToggleMastered}
               onToggleFavorite={handleToggleFavorite}
               onOpenDetail={setSelectedSprite}
             />
@@ -663,8 +716,10 @@ export default function App() {
         isOpen={selectedSprite !== null}
         onClose={() => setSelectedSprite(null)}
         isObtained={selectedSprite ? checklist.obtained.includes(selectedSprite.id) : false}
+        isMastered={selectedSprite ? (checklist.mastered || []).includes(selectedSprite.id) : false}
         isFavorite={selectedSprite ? checklist.favorites.includes(selectedSprite.id) : false}
         onToggleObtained={handleToggleObtained}
+        onToggleMastered={handleToggleMastered}
         onToggleFavorite={handleToggleFavorite}
         obtainedDate={selectedSprite ? checklist.obtainedDates[selectedSprite.id] : undefined}
         notes={selectedSprite ? checklist.notes[selectedSprite.id] : ''}

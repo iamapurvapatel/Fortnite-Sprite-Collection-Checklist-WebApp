@@ -22,8 +22,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const rarities: SpriteRarity[] = ['Rare', 'Epic', 'Legendary', 'Mythic', 'Special'];
-  const variants: SpriteVariant[] = ['Basic', 'Gold', 'Gummy', 'Galaxy', 'Holofoil', 'Gem'];
-  const categories: SpriteCategory[] = ['Basic', 'Gold', 'Gummy', 'Galaxy', 'Holofoil', 'Gem'];
+  const variants: SpriteVariant[] = ['Basic', 'Gold', 'Gummy', 'Galaxy', 'Holofoil', 'Gem', 'Cube'];
+  const categories: SpriteCategory[] = ['Basic', 'Gold', 'Gummy', 'Galaxy', 'Holofoil', 'Gem', 'Cube'];
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({ ...prev, search: e.target.value }));
@@ -136,17 +136,6 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
           {/* View Mode Toggle */}
           <div className="flex bg-[#FFF6E6]/50 dark:bg-zinc-900/60 p-0.5 rounded-lg border border-[#F1E4C6]/40 dark:border-white/5">
             <button
-              onClick={() => setViewMode('grid')}
-              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
-                viewMode === 'grid'
-                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-zinc-200'
-              }`}
-            >
-              <Icons.LayoutGrid className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Grid</span>
-            </button>
-            <button
               onClick={() => setViewMode('matrix')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                 viewMode === 'matrix'
@@ -156,6 +145,17 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             >
               <Icons.Grid className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Matrix</span>
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'grid'
+                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
+                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-zinc-200'
+              }`}
+            >
+              <Icons.LayoutGrid className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Grid</span>
             </button>
           </div>
 

@@ -11,11 +11,11 @@ export interface SpriteFeatures {
   imageUrl?: string;
 }
 
-export type SpriteCategory = 'Basic' | 'Gold' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem';
+export type SpriteCategory = 'Basic' | 'Gold' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem' | 'Cube';
 
 export type SpriteRarity = 'Rare' | 'Epic' | 'Legendary' | 'Mythic' | 'Special';
 
-export type SpriteVariant = 'Basic' | 'Gold' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem';
+export type SpriteVariant = 'Basic' | 'Gold' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem' | 'Cube';
 
 export interface Sprite {
   id: string;
@@ -41,9 +41,11 @@ export interface CategoryDetail {
 
 export interface ChecklistState {
   obtained: string[];
+  mastered: string[];
   favorites: string[];
   notes: Record<string, string>;
   obtainedDates: Record<string, string>;
+  masteredDates: Record<string, string>;
 }
 
 export interface Filters {

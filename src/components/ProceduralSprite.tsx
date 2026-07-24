@@ -4,12 +4,23 @@ import { SpriteFeatures } from '../types';
 interface ProceduralSpriteProps {
   features: SpriteFeatures;
   obtained?: boolean;
+  mastered?: boolean;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
+
+const AuraOverlay: React.FC = () => {
+  return (
+    <div className="absolute inset-[-15%] pointer-events-none z-0 overflow-visible">
+      {/* Soft Golden Aura backdrop */}
+      <div className="absolute inset-[15%] rounded-full bg-amber-500/20 blur-xl shadow-[0_0_24px_rgba(245,158,11,0.25)] animate-[pulse_3s_infinite_ease-in-out]" />
+    </div>
+  );
+};
 
 export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
   features,
   obtained = false,
+  mastered = false,
   size = 'md',
 }) => {
   const {
@@ -38,7 +49,9 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
   const filterStyle: React.CSSProperties = {
     '--glow-color': glowColor,
     '--unobtained-filter': obtained
-      ? `drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 4px ${glowColor})`
+      ? mastered
+        ? `drop-shadow(0 0 14px #fbbf24) drop-shadow(0 0 6px ${glowColor})`
+        : `drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 4px ${glowColor})`
       : 'grayscale(0.9) brightness(0.7) opacity(0.55)',
     filter: 'var(--unobtained-filter)',
     opacity: obtained ? 1 : undefined,
@@ -57,6 +70,18 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
             className="absolute inset-0 rounded-full blur-2xl animate-pulse opacity-25"
             style={{ backgroundColor: glowColor }}
           />
+        )}
+        {obtained && mastered && (
+          <>
+            <div
+              className="absolute inset-[-10%] rounded-full blur-3xl animate-[pulse_2.5s_infinite] opacity-35"
+              style={{ backgroundColor: '#fbbf24' }}
+            />
+            {/* Spinning/pulsing golden halo ring */}
+            <div className="absolute inset-0 border border-dashed border-amber-500/30 rounded-full animate-[spin_15s_linear_infinite]" />
+            <div className="absolute inset-1 border border-dotted border-amber-400/20 rounded-full animate-[spin_10s_linear_infinite_reverse]" />
+            <AuraOverlay />
+          </>
         )}
 
         {/* Main Image Render */}
@@ -82,6 +107,18 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
           className="absolute inset-0 rounded-full blur-2xl animate-pulse opacity-25"
           style={{ backgroundColor: glowColor }}
         />
+      )}
+      {obtained && mastered && (
+        <>
+          <div
+            className="absolute inset-[-10%] rounded-full blur-3xl animate-[pulse_2.5s_infinite] opacity-35"
+            style={{ backgroundColor: '#fbbf24' }}
+          />
+          {/* Spinning/pulsing golden halo ring */}
+          <div className="absolute inset-0 border border-dashed border-amber-500/30 rounded-full animate-[spin_15s_linear_infinite]" />
+          <div className="absolute inset-1.5 border border-dotted border-amber-400/20 rounded-full animate-[spin_10s_linear_infinite_reverse]" />
+          <AuraOverlay />
+        </>
       )}
 
       {/* Main SVG Render */}
@@ -467,6 +504,188 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
                   <polygon points="48,54 52,54 50,58" fill="#ef4444" filter="drop-shadow(0 0 2.5px #ef4444)" />
                   <path d="M26,35 L50,44 L74,35" fill="none" stroke="#3b82f6" strokeWidth="1.5" />
                   <path d="M50,44 L50,82" fill="none" stroke="#3b82f6" strokeWidth="1.5" />
+                </>
+              )}
+
+              {customId === 'b19' && (
+                <>
+                  {/* b19 (Batman) - 3D Toy Figurine based on provided image */}
+                  <defs>
+                    <linearGradient id="batmanCowlGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#374151" />
+                      <stop offset="30%" stopColor="#1f2937" />
+                      <stop offset="100%" stopColor="#0f172a" />
+                    </linearGradient>
+                    <radialGradient id="batmanSkinGrad" cx="35%" cy="30%" r="70%">
+                      <stop offset="0%" stopColor="#fde047" opacity="0.15" />
+                      <stop offset="30%" stopColor="#f5bc98" />
+                      <stop offset="100%" stopColor="#d97706" />
+                    </radialGradient>
+                    <linearGradient id="batmanBeltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#fde047" />
+                      <stop offset="100%" stopColor="#ca8a04" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Stubby peach arms extended */}
+                  <ellipse cx="19" cy="62" rx="7" ry="5" fill="#f5bc98" transform="rotate(-15 19 62)" stroke="#d97706" strokeWidth="0.5" />
+                  <ellipse cx="81" cy="62" rx="7" ry="5" fill="#f5bc98" transform="rotate(15 81 62)" stroke="#d97706" strokeWidth="0.5" />
+
+                  {/* Stubby peach legs at bottom */}
+                  <rect x="36" y="80" width="10" height="10" rx="4" fill="#f5bc98" stroke="#d97706" strokeWidth="0.5" />
+                  <rect x="54" y="80" width="10" height="10" rx="4" fill="#f5bc98" stroke="#d97706" strokeWidth="0.5" />
+
+                  {/* Main 3D capsule body (peach skin tone) */}
+                  <rect x="24" y="24" width="52" height="58" rx="20" fill="url(#batmanSkinGrad)" />
+
+                  {/* Muscular chest definition */}
+                  <path d="M38,58 Q50,62 62,58" fill="none" stroke="#ca8a04" strokeWidth="1.2" opacity="0.4" />
+                  <line x1="50" y1="54" x2="50" y2="65" stroke="#ca8a04" strokeWidth="1.2" opacity="0.4" />
+
+                  {/* Black cowl covering upper face & head */}
+                  <path d="M24,34 C24,20 36,16 50,16 C64,16 76,20 76,34 L76,54 C76,58 68,59 63,56 C57,53 52,57 50,57 C48,57 43,53 37,56 C32,59 24,58 24,54 Z" fill="url(#batmanCowlGrad)" />
+
+                  {/* Bat Ears on top */}
+                  <polygon points="26,24 21,4 37,18" fill="#1f2937" />
+                  <polygon points="74,24 79,4 63,18" fill="#0f172a" />
+
+                  {/* White glowing slit eyes */}
+                  <polygon points="32,38 45,41 43,45 31,41" fill="#f8fafc" filter="drop-shadow(0 0 2px #ffffff)" />
+                  <polygon points="68,38 55,41 57,45 69,41" fill="#f8fafc" filter="drop-shadow(0 0 2px #ffffff)" />
+
+                  {/* Determined grim mouth in lower peach cutout */}
+                  <path d="M43,49 Q48,47 50,49 Q52,47 57,49" fill="none" stroke="#4b5563" strokeWidth="2" strokeLinecap="round" />
+
+                  {/* Black trunks at hips */}
+                  <path d="M24,71 L76,71 L66,82 L34,82 Z" fill="#0f172a" />
+
+                  {/* Yellow Utility Belt */}
+                  <rect x="23" y="66" width="54" height="6" rx="2" fill="url(#batmanBeltGrad)" stroke="#854d0e" strokeWidth="0.8" />
+                  {/* Left & Right pouches */}
+                  <rect x="24" y="63" width="5" height="10" rx="1.5" fill="#facc15" stroke="#a16207" strokeWidth="0.6" />
+                  <rect x="71" y="63" width="5" height="10" rx="1.5" fill="#facc15" stroke="#a16207" strokeWidth="0.6" />
+
+                  {/* Oval Belt Buckle with Bat Emblem */}
+                  <ellipse cx="50" cy="69" rx="8" ry="5" fill="#fde047" stroke="#78350f" strokeWidth="1" />
+                  <path d="M45,69 Q48,66 50,69 Q52,66 55,69 Q53,72 50,70.5 Q47,72 45,69 Z" fill="#0f172a" />
+                </>
+              )}
+
+              {customId === 'b20' && (
+                <>
+                  {/* b20 (Pollo) - 3D Gamer Chicken Figurine based on provided image */}
+                  <defs>
+                    <radialGradient id="polloBodyGrad" cx="35%" cy="30%" r="70%">
+                      <stop offset="0%" stopColor="#fef08a" />
+                      <stop offset="60%" stopColor="#facc15" />
+                      <stop offset="100%" stopColor="#eab308" />
+                    </radialGradient>
+                    <linearGradient id="polloHairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#78350f" />
+                      <stop offset="100%" stopColor="#451a03" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Stubby yellow legs */}
+                  <rect x="36" y="80" width="8" height="9" rx="3" fill="#facc15" stroke="#ca8a04" strokeWidth="0.8" />
+                  <rect x="56" y="80" width="8" height="9" rx="3" fill="#facc15" stroke="#ca8a04" strokeWidth="0.8" />
+
+                  {/* Round yellow chicken body */}
+                  <ellipse cx="50" cy="52" rx="28" ry="29" fill="url(#polloBodyGrad)" />
+
+                  {/* Esports Jersey (White with mint green & black accents) */}
+                  <path d="M25,48 C25,48 30,78 50,78 C70,78 75,48 75,48 L73,42 L27,42 Z" fill="#ffffff" />
+                  {/* Mint green V-neck collar & shoulder panels */}
+                  <path d="M27,42 L38,62 L50,68 L62,62 L73,42 L65,42 L50,56 L35,42 Z" fill="#2dd4bf" />
+                  <path d="M32,42 L50,58 L68,42" fill="none" stroke="#0d9488" strokeWidth="1.5" />
+                  {/* Black waist trim */}
+                  <rect x="25" y="73" width="50" height="5" fill="#18181b" />
+
+                  {/* FNCS style crest on chest */}
+                  <polygon points="50,60 55,63 54,69 50,72 46,69 45,63" fill="#10b981" stroke="#047857" strokeWidth="0.8" />
+                  <path d="M47,65 L50,62 L53,65 M47,68 L50,65 L53,68" fill="none" stroke="#ffffff" strokeWidth="1" />
+
+                  {/* Large cute anime chick eyes with dual glints */}
+                  <circle cx="41" cy="42" r="5.5" fill="#0f172a" />
+                  <circle cx="39" cy="40" r="2" fill="#ffffff" />
+                  <circle cx="42.5" cy="44" r="1" fill="#ffffff" />
+
+                  <circle cx="59" cy="42" r="5.5" fill="#0f172a" />
+                  <circle cx="57" cy="40" r="2" fill="#ffffff" />
+                  <circle cx="60.5" cy="44" r="1" fill="#ffffff" />
+
+                  {/* Bright Red Beak */}
+                  <polygon points="44,46 56,46 50,55" fill="#ef4444" stroke="#991b1b" strokeWidth="0.8" />
+
+                  {/* Wavy brown gamer hair */}
+                  <path d="M28,28 C26,16 40,12 48,20 C52,12 68,14 72,28 C62,20 52,26 50,20 C46,26 38,20 28,28 Z" fill="url(#polloHairGrad)" />
+                  <path d="M34,20 C40,14 48,16 52,22" fill="none" stroke="#92400e" strokeWidth="2" strokeLinecap="round" />
+
+                  {/* Black gaming headset */}
+                  <path d="M22,38 C22,18 78,18 78,38" fill="none" stroke="#1f2937" strokeWidth="4.5" strokeLinecap="round" />
+                  <rect x="18" y="33" width="9" height="15" rx="4.5" fill="#111827" stroke="#374151" strokeWidth="1" />
+                  <rect x="73" y="33" width="9" height="15" rx="4.5" fill="#111827" stroke="#374151" strokeWidth="1" />
+                  {/* Microphone arm with red tip */}
+                  <path d="M22,44 L32,50 L42,50" fill="none" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="43" cy="50" r="2.5" fill="#ef4444" />
+                </>
+              )}
+
+              {customId === 'b21' && (
+                <>
+                  {/* b21 (Vini Jr.) - 3D Brazil Soccer Star Figurine based on provided image */}
+                  <defs>
+                    <radialGradient id="viniSkinGrad" cx="35%" cy="30%" r="70%">
+                      <stop offset="0%" stopColor="#7c4a27" />
+                      <stop offset="70%" stopColor="#5c3a21" />
+                      <stop offset="100%" stopColor="#3b2110" />
+                    </radialGradient>
+                    <linearGradient id="viniJerseyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#fde047" />
+                      <stop offset="100%" stopColor="#eab308" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Stubby dark brown legs */}
+                  <rect x="36" y="80" width="9" height="9" rx="3.5" fill="#5c3a21" stroke="#3b2110" strokeWidth="0.8" />
+                  <rect x="55" y="80" width="9" height="9" rx="3.5" fill="#5c3a21" stroke="#3b2110" strokeWidth="0.8" />
+
+                  {/* Main brown body */}
+                  <rect x="25" y="24" width="50" height="58" rx="18" fill="url(#viniSkinGrad)" />
+
+                  {/* Short black dreadlock/afro texture top */}
+                  <path d="M25,32 C23,17 35,15 42,17 C48,13 55,13 60,17 C68,15 77,21 75,32 Z" fill="#111827" />
+                  <circle cx="32" cy="19" r="4" fill="#1f2937" />
+                  <circle cx="40" cy="16" r="4.5" fill="#1f2937" />
+                  <circle cx="50" cy="15" r="4.5" fill="#1f2937" />
+                  <circle cx="60" cy="16" r="4.5" fill="#1f2937" />
+                  <circle cx="68" cy="19" r="4" fill="#1f2937" />
+
+                  {/* Dark eye mask area with horizontal glowing white eyes */}
+                  <path d="M29,36 L71,36 L69,47 L31,47 Z" fill="#09090b" opacity="0.9" />
+                  <rect x="34" y="39" width="11" height="5" rx="1" fill="#ffffff" filter="drop-shadow(0 0 3px #ffffff)" />
+                  <rect x="55" y="39" width="11" height="5" rx="1" fill="#ffffff" filter="drop-shadow(0 0 3px #ffffff)" />
+
+                  {/* Subtle mouth line */}
+                  <path d="M45,51 L55,51" stroke="#2a170a" strokeWidth="2" strokeLinecap="round" />
+
+                  {/* Yellow Brazil Soccer Jersey */}
+                  <path d="M25,54 L75,54 L72,74 L28,74 Z" fill="url(#viniJerseyGrad)" />
+                  {/* Green V-neck collar */}
+                  <path d="M37,54 C37,59 63,59 63,54" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" />
+                  {/* Sleeve green & purple accents */}
+                  <rect x="22" y="56" width="6" height="3" fill="#16a34a" />
+                  <rect x="72" y="56" width="6" height="3" fill="#16a34a" />
+
+                  {/* Nike swoosh left chest */}
+                  <path d="M33,63 Q36,66 39,62" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+                  {/* VJR monogram logo right chest */}
+                  <text x="59" y="65" fontSize="6.5" fontWeight="900" fill="#1e3a8a" fontFamily="sans-serif" textAnchor="middle">VJR</text>
+
+                  {/* Royal Blue Shorts with yellow trim */}
+                  <path d="M27,74 L73,74 L68,82 L32,82 Z" fill="#2563eb" />
+                  <line x1="27" y1="74" x2="32" y2="82" stroke="#facc15" strokeWidth="1.5" />
+                  <line x1="73" y1="74" x2="68" y2="82" stroke="#facc15" strokeWidth="1.5" />
                 </>
               )}
             </>
