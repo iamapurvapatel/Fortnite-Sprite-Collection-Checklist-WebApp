@@ -184,38 +184,38 @@ export default function App() {
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Failed to capture canvas 2D render context.');
 
-      // Beautiful gradient background matching current active theme
+      // Beautiful gradient background matching current active theme (Cosmic Arcana)
       const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1080);
       if (darkMode) {
-        bgGrad.addColorStop(0, '#16120E'); // deep warm charcoal
-        bgGrad.addColorStop(0.5, '#1D1813'); // mid brown-black
-        bgGrad.addColorStop(1, '#100D0A'); // rich dark abyss
+        bgGrad.addColorStop(0, '#0D0B18'); // Cosmic Dark Obsidian
+        bgGrad.addColorStop(0.5, '#18132B'); // Indigo Night
+        bgGrad.addColorStop(1, '#0D0B18'); // Deep Astral Abyss
       } else {
-        bgGrad.addColorStop(0, '#FFFDFA'); // warm light cream
-        bgGrad.addColorStop(0.5, '#FFF8EB'); // soft custard
-        bgGrad.addColorStop(1, '#FBF4E3'); // elegant sand cream
+        bgGrad.addColorStop(0, '#F6F4FE'); // Mystic Starlight Cream
+        bgGrad.addColorStop(0.5, '#FAF5FF'); // Soft Lavender Starlight
+        bgGrad.addColorStop(1, '#F3E8FF'); // Pale Arcane Purple
       }
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 1080, 1080);
 
       // Ambient color glows
       if (darkMode) {
-        ctx.fillStyle = 'rgba(245, 179, 53, 0.04)'; // warm amber glow
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.08)'; // Cosmic Violet glow
         ctx.beginPath();
         ctx.arc(200, 200, 450, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = 'rgba(255, 217, 119, 0.03)'; // soft golden highlight
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.06)'; // Astral Cyan highlight
         ctx.beginPath();
         ctx.arc(880, 880, 550, 0, Math.PI * 2);
         ctx.fill();
       } else {
-        ctx.fillStyle = 'rgba(245, 179, 53, 0.05)'; // warm amber glow for light mode
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.08)'; // Cosmic Violet glow
         ctx.beginPath();
         ctx.arc(200, 200, 450, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = 'rgba(255, 217, 119, 0.04)';
+        ctx.fillStyle = 'rgba(6, 182, 212, 0.06)'; // Astral Cyan highlight
         ctx.beginPath();
         ctx.arc(880, 880, 550, 0, Math.PI * 2);
         ctx.fill();
@@ -226,20 +226,20 @@ export default function App() {
       ctx.textBaseline = 'top';
       const titleGrad = ctx.createLinearGradient(350, 45, 730, 45);
       if (darkMode) {
-        titleGrad.addColorStop(0, '#F5B335'); // golden amber
-        titleGrad.addColorStop(0.5, '#FFD977'); // soft gold
-        titleGrad.addColorStop(1, '#FFF2D4'); // light golden reflection
+        titleGrad.addColorStop(0, '#A855F7'); // Cosmic Violet
+        titleGrad.addColorStop(0.5, '#C084FC'); // Starlight Violet
+        titleGrad.addColorStop(1, '#EC4899'); // Nebula Magenta
       } else {
-        titleGrad.addColorStop(0, '#B45309'); // rich deep amber-700
-        titleGrad.addColorStop(0.5, '#78350F'); // deep bronze amber-900
-        titleGrad.addColorStop(1, '#D97706'); // vibrant amber-600
+        titleGrad.addColorStop(0, '#7E22CE'); // Deep Violet
+        titleGrad.addColorStop(0.5, '#9333EA'); // Cosmic Purple
+        titleGrad.addColorStop(1, '#C084FC'); // Bright Violet
       }
       ctx.fillStyle = titleGrad;
       ctx.font = '900 38px "Inter", system-ui, sans-serif';
       ctx.fillText('MY SPRITE COLLECTION', 540, 45);
 
       // Subtitle
-      ctx.fillStyle = darkMode ? '#9F8F75' : '#6B5E48';
+      ctx.fillStyle = darkMode ? '#A78BFA' : '#5B21B6';
       ctx.font = 'bold 16px "Inter", system-ui, sans-serif';
       ctx.fillText(`${checkedSprites.length} of ${SPRITES.length} Sprites Collected • Sprite Checklist`, 540, 96);
 
@@ -273,8 +273,8 @@ export default function App() {
         const cardH = cellSize - margin * 2;
 
         // Draw card plate
-        ctx.fillStyle = darkMode ? 'rgba(29, 24, 19, 0.75)' : 'rgba(255, 253, 250, 0.85)';
-        ctx.strokeStyle = darkMode ? 'rgba(241, 228, 198, 0.08)' : 'rgba(107, 94, 72, 0.12)';
+        ctx.fillStyle = darkMode ? 'rgba(24, 19, 43, 0.88)' : 'rgba(255, 255, 255, 0.9)';
+        ctx.strokeStyle = darkMode ? '#2A2147' : '#E9D5FF';
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.roundRect(cardX, cardY, cardW, cardH, Math.min(10, Math.max(4, cellSize * 0.08)));
@@ -282,7 +282,7 @@ export default function App() {
         ctx.stroke();
 
         // Sprite bloom glow
-        ctx.shadowColor = sprite.features.glowColor || (darkMode ? 'rgba(245, 179, 53, 0.35)' : 'rgba(245, 179, 53, 0.2)');
+        ctx.shadowColor = sprite.features.glowColor || (darkMode ? 'rgba(168, 85, 247, 0.35)' : 'rgba(168, 85, 247, 0.2)');
         ctx.shadowBlur = Math.max(8, cellSize * 0.12);
 
         // Draw sprite
@@ -303,7 +303,7 @@ export default function App() {
           // Name
           const nameSize = Math.max(8, Math.floor(cardH * 0.095));
           ctx.font = `bold ${nameSize}px "Inter", system-ui, sans-serif`;
-          ctx.fillStyle = darkMode ? '#F7F0E3' : '#221A12';
+          ctx.fillStyle = darkMode ? '#F3E8FF' : '#1E1A34';
           ctx.fillText(sprite.name, cardX + cardW / 2, cardY + cardH - (cardH * 0.18));
 
           // Variant subtitle
@@ -311,14 +311,14 @@ export default function App() {
           ctx.font = `600 ${subSize}px "Inter", system-ui, sans-serif`;
 
           const catColors: Record<string, string> = {
-            Basic: darkMode ? '#A38F72' : '#6B5E48',
-            Gold: '#F5B335',
-            Gummy: '#ec4899',
-            Galaxy: '#818cf8',
-            Holofoil: '#22d3ee',
-            Gem: '#10b981',
+            Basic: darkMode ? '#A78BFA' : '#5B21B6',
+            Gold: '#F59E0B',
+            Gummy: '#EC4899',
+            Galaxy: '#818CF8',
+            Holofoil: '#06B6D4',
+            Gem: '#10B981',
           };
-          ctx.fillStyle = catColors[sprite.category] || (darkMode ? '#9F8F75' : '#8A7A5F');
+          ctx.fillStyle = catColors[sprite.category] || (darkMode ? '#C084FC' : '#7C3AED');
           ctx.fillText(sprite.variant, cardX + cardW / 2, cardY + cardH - (cardH * 0.06));
         }
       });
@@ -326,7 +326,7 @@ export default function App() {
       // Bottom footer branding
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
-      ctx.fillStyle = darkMode ? '#4A3B2A' : '#BDB099';
+      ctx.fillStyle = darkMode ? '#7C3AED' : '#A78BFA';
       ctx.font = 'bold 11px "Courier New", Courier, monospace';
       ctx.fillText('v1.2.0 • SPRITE CHECKLIST • POWERED BY SLEEK ASSISTANT', 540, 1055);
 
@@ -392,27 +392,39 @@ export default function App() {
     if (sprite?.unreleased) return;
 
     setChecklist((prev) => {
-      // Rule: can only master if already obtained
       const isObtained = prev.obtained.includes(id);
-      if (!isObtained) return prev;
-
       const isMastered = (prev.mastered || []).includes(id);
-      const newMastered = isMastered
-        ? (prev.mastered || []).filter((item) => item !== id)
-        : [...(prev.mastered || []), id];
 
-      const newDates = { ...prev.masteredDates };
       if (!isMastered) {
-        newDates[id] = new Date().toISOString();
-      } else {
-        delete newDates[id];
-      }
+        // Mastering sprite: auto-obtain if not already obtained
+        const newObtained = isObtained ? prev.obtained : [...prev.obtained, id];
+        const newObtainedDates = { ...prev.obtainedDates };
+        if (!isObtained) {
+          newObtainedDates[id] = new Date().toISOString();
+        }
 
-      return {
-        ...prev,
-        mastered: newMastered,
-        masteredDates: newDates,
-      };
+        const newMastered = [...(prev.mastered || []), id];
+        const newMasteredDates = { ...prev.masteredDates, [id]: new Date().toISOString() };
+
+        return {
+          ...prev,
+          obtained: newObtained,
+          mastered: newMastered,
+          obtainedDates: newObtainedDates,
+          masteredDates: newMasteredDates,
+        };
+      } else {
+        // Unmastering sprite
+        const newMastered = (prev.mastered || []).filter((item) => item !== id);
+        const newMasteredDates = { ...prev.masteredDates };
+        delete newMasteredDates[id];
+
+        return {
+          ...prev,
+          mastered: newMastered,
+          masteredDates: newMasteredDates,
+        };
+      }
     });
   };
 
@@ -577,16 +589,16 @@ export default function App() {
   }, [checklist.obtained, activeCategory, filters]);
 
   return (
-    <div className="min-h-screen bg-[#FFFDFA] dark:bg-[#16120E] dark:bg-gradient-to-tr dark:from-[#16120E] dark:via-[#1D1813] dark:to-[#16120E] transition-colors duration-500 relative overflow-hidden pb-12 font-sans text-[#221A12] dark:text-[#F7F0E3]">
+    <div className="min-h-screen bg-[#F6F4FE] dark:bg-[#0D0B18] dark:bg-gradient-to-tr dark:from-[#0D0B18] dark:via-[#18132B] dark:to-[#0D0B18] transition-colors duration-500 relative overflow-hidden pb-12 font-sans text-[#1E1A34] dark:text-[#F3E8FF]">
       {/* Dynamic Background Particles */}
       <BackgroundParticles darkMode={darkMode} />
 
       {/* Decorative backdrop blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#F5B335]/5 dark:bg-[#5C4017]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-[#FFD978]/5 dark:bg-[#C98B1F]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#A855F7]/10 dark:bg-[#A855F7]/15 blur-[130px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-[#06B6D4]/10 dark:bg-[#06B6D4]/15 blur-[130px] rounded-full pointer-events-none -z-10" />
 
       {/* Sticky Header with Backdrop Blur */}
-      <div className="sticky top-0 z-50 w-full bg-[#FFFDFA]/80 dark:bg-[#16120E]/80 backdrop-blur-md border-b border-[#F1E4C6] dark:border-[#4A3B2A] transition-all">
+      <div className="sticky top-0 z-50 w-full bg-[#F6F4FE]/80 dark:bg-[#0D0B18]/80 backdrop-blur-md border-b border-[#E9D5FF] dark:border-[#2A2147] transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Header
             darkMode={darkMode}
@@ -615,20 +627,22 @@ export default function App() {
           setViewMode={setViewMode}
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
+          onExportImage={handleExportImage}
+          isExporting={isExporting}
         />
 
         {/* Category specific description when category is filtered */}
         {activeCategory !== 'All' && (
-          <div className="bg-white/70 dark:bg-[#1D1813]/30 px-5 py-3.5 rounded-xl flex items-center justify-between gap-4 border border-[#F1E4C6] dark:border-[#4A3B2A] shadow-xs animate-fadeInScale">
+          <div className="bg-white/80 dark:bg-[#18132B]/60 px-5 py-3.5 rounded-xl flex items-center justify-between gap-4 border border-[#E9D5FF] dark:border-[#2A2147] shadow-xs animate-fadeInScale">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#F5B335] dark:bg-[#FFD977] animate-pulse" />
-              <p className="text-xs text-[#221A12]/90 dark:text-[#D6C8AF]">
-                Displaying sprites from the <span className="font-bold text-[#F5B335] dark:text-[#FFD977]">{activeCategory}</span> category.
+              <span className="w-2 h-2 rounded-full bg-[#A855F7] dark:bg-[#C084FC] animate-pulse" />
+              <p className="text-xs text-[#1E1A34]/90 dark:text-[#E9D5FF]">
+                Displaying sprites from the <span className="font-bold text-[#A855F7] dark:text-[#C084FC]">{activeCategory}</span> category.
               </p>
             </div>
             <button
               onClick={() => setActiveCategory('All')}
-              className="text-xs font-bold text-[#F5B335] hover:text-[#FFC95A] dark:text-[#FFD977] cursor-pointer flex items-center gap-1"
+              className="text-xs font-bold text-[#A855F7] hover:text-[#C084FC] dark:text-[#C084FC] cursor-pointer flex items-center gap-1"
             >
               Show All Categories <Icons.X className="w-3.5 h-3.5" />
             </button>
@@ -650,7 +664,6 @@ export default function App() {
                   onToggleObtained={handleToggleObtained}
                   onToggleMastered={handleToggleMastered}
                   onToggleFavorite={handleToggleFavorite}
-                  onOpenDetail={setSelectedSprite}
                 />
               ))}
             </div>

@@ -19,12 +19,12 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="w-full flex items-center justify-between py-4">
       <div className="flex items-center gap-3">
-        <div className="relative flex items-center justify-center p-2.5 rounded-xl bg-linear-to-tr from-[#F59E0B] to-[#FFD978] dark:from-[#5C4017] dark:to-[#F5B335] text-[#221A12] dark:text-[#1A130D] shadow-[0_4px_12px_rgba(245,158,11,0.15)] dark:shadow-none">
+        <div className="relative flex items-center justify-center p-2.5 rounded-xl bg-linear-to-tr from-[#A855F7] to-[#EC4899] dark:from-[#7E22CE] dark:to-[#A855F7] text-white shadow-[0_4px_16px_rgba(168,85,247,0.3)]">
           <Icons.Sparkles className="w-5.5 h-5.5 animate-pulse" />
-          <div className="absolute -inset-1 bg-linear-to-tr from-[#F59E0B] to-[#FFD978] dark:from-[#5C4017] dark:to-[#F5B335] rounded-xl blur-xs opacity-25 -z-10" />
+          <div className="absolute -inset-1 bg-linear-to-tr from-[#A855F7] to-[#EC4899] dark:from-[#7E22CE] dark:to-[#A855F7] rounded-xl blur-xs opacity-35 -z-10" />
         </div>
         <div>
-          <h1 className="text-lg sm:text-xl font-display font-black tracking-tight text-[#221A12] dark:text-slate-100">
+          <h1 className="text-lg sm:text-xl font-display font-black tracking-tight text-[#1E1A34] dark:text-[#F3E8FF]">
             My Sprites
           </h1>
         </div>
@@ -35,17 +35,17 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onExportImage}
           disabled={isExporting}
-          className="relative p-2.5 rounded-full border border-[#F1E4C6] dark:border-white/10 bg-white dark:bg-transparent hover:bg-[#FFF6E6] dark:hover:bg-white/5 text-[#221A12]/90 dark:text-slate-300 transition-all flex items-center gap-1.5 text-xs font-bold disabled:opacity-50 cursor-pointer shadow-xs hover:shadow-sm"
+          className="relative p-2.5 rounded-full border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B]/80 hover:bg-[#FAF5FF] dark:hover:bg-[#251E44] text-[#1E1A34] dark:text-[#F3E8FF] transition-all flex items-center gap-1.5 text-xs font-bold disabled:opacity-50 cursor-pointer shadow-xs hover:shadow-sm"
           title="Export obtained sprites as high-res 1080x1080 1:1 picture"
         >
           {isExporting ? (
             <>
-              <Icons.Loader2 className="w-4 h-4 text-[#F59E0B] dark:text-[#FFD977] animate-spin" />
+              <Icons.Loader2 className="w-4 h-4 text-[#A855F7] dark:text-[#C084FC] animate-spin" />
               <span className="hidden sm:inline">Exporting...</span>
             </>
           ) : (
             <>
-              <Icons.Download className="w-4 h-4 text-[#F59E0B] dark:text-[#FFD977]" />
+              <Icons.Download className="w-4 h-4 text-[#A855F7] dark:text-[#C084FC]" />
               <span className="hidden sm:inline">Export Poster</span>
             </>
           )}
@@ -54,22 +54,22 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Settings Toggle button */}
         <button
           onClick={onOpenSettings}
-          className="p-2.5 rounded-full border border-[#F1E4C6] dark:border-white/10 bg-white dark:bg-transparent hover:bg-[#FFF6E6] dark:hover:bg-white/5 text-[#221A12]/90 dark:text-slate-300 transition-all cursor-pointer shadow-xs hover:shadow-sm"
+          className="p-2.5 rounded-full border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B]/80 hover:bg-[#FAF5FF] dark:hover:bg-[#251E44] text-[#1E1A34] dark:text-[#F3E8FF] transition-all cursor-pointer shadow-xs hover:shadow-sm"
           title="Data Backup & Configuration"
         >
-          <Icons.Settings className="w-4 h-4 text-[#6B5E48] dark:text-slate-300" />
+          <Icons.Settings className="w-4 h-4 text-[#5B21B6] dark:text-[#C084FC]" />
         </button>
 
         {/* Theme Toggle Button */}
         <button
           onClick={toggleDarkMode}
-          className="p-2.5 rounded-full border border-[#F1E4C6] dark:border-white/10 bg-white dark:bg-transparent hover:bg-[#FFF6E6] dark:hover:bg-white/5 text-[#221A12]/90 dark:text-slate-300 transition-all cursor-pointer shadow-xs hover:shadow-sm"
+          className="p-2.5 rounded-full border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B]/80 hover:bg-[#FAF5FF] dark:hover:bg-[#251E44] text-[#1E1A34] dark:text-[#F3E8FF] transition-all cursor-pointer shadow-xs hover:shadow-sm"
           title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           {darkMode ? (
             <Icons.Sun className="w-4 h-4 text-amber-400 animate-pulse" />
           ) : (
-            <Icons.Moon className="w-4 h-4 text-[#F59E0B]" />
+            <Icons.Moon className="w-4 h-4 text-[#A855F7]" />
           )}
         </button>
       </div>

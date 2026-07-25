@@ -27,7 +27,7 @@ export function BackgroundParticles({ darkMode }: BackgroundParticlesProps) {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
-    const particleCount = 45;
+    const particleCount = 30;
 
     const handleResize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -43,15 +43,15 @@ export function BackgroundParticles({ darkMode }: BackgroundParticlesProps) {
 
     const colors = darkMode
       ? [
-          'rgba(245, 179, 53, ',  // Gold variant
-          'rgba(255, 217, 120, ', // Basic/Honey Glow
-          'rgba(236, 72, 153, ',  // Gummy pink glow
-          'rgba(129, 140, 248, ', // Galaxy blue-indigo glow
+          'rgba(168, 85, 247, ',  // Cosmic Violet
+          'rgba(6, 182, 212, ',   // Astral Cyan
+          'rgba(236, 72, 153, ',  // Nebula Magenta
+          'rgba(192, 132, 252, ', // Starlight Purple
         ]
       : [
-          'rgba(179, 139, 109, ', // Soft warm brown
-          'rgba(245, 179, 53, ',  // Amber/Gold
-          'rgba(163, 143, 114, ', // Soft warm gold gray
+          'rgba(147, 51, 234, ',  // Mystic Violet
+          'rgba(8, 145, 178, ',   // Arcane Cyan
+          'rgba(196, 181, 253, ', // Soft Lavender
         ];
 
     const createParticle = (initY = false): Particle => {
@@ -59,11 +59,11 @@ export function BackgroundParticles({ darkMode }: BackgroundParticlesProps) {
       return {
         x: Math.random() * window.innerWidth,
         y: initY ? Math.random() * window.innerHeight : window.innerHeight + Math.random() * 20,
-        size: Math.random() * 2.2 + 0.8,
-        speedX: (Math.random() - 0.5) * 0.2,
-        speedY: -(Math.random() * 0.35 + 0.15),
-        opacity: Math.random() * 0.4 + 0.15,
-        fadeSpeed: (Math.random() * 0.004) + 0.001,
+        size: Math.random() * 1.4 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.15,
+        speedY: -(Math.random() * 0.25 + 0.1),
+        opacity: Math.random() * 0.15 + 0.05,
+        fadeSpeed: (Math.random() * 0.002) + 0.0008,
         color: colorTemplate,
       };
     };
@@ -82,12 +82,12 @@ export function BackgroundParticles({ darkMode }: BackgroundParticlesProps) {
         p.y += p.speedY;
 
         // Apply a very slight horizontal wave drift over time
-        p.speedX += (Math.random() - 0.5) * 0.015;
-        p.speedX = Math.max(-0.4, Math.min(0.4, p.speedX));
+        p.speedX += (Math.random() - 0.5) * 0.01;
+        p.speedX = Math.max(-0.25, Math.min(0.25, p.speedX));
 
         // Pulsing opacity
         p.opacity += p.fadeSpeed;
-        if (p.opacity >= 0.75 || p.opacity <= 0.1) {
+        if (p.opacity >= 0.25 || p.opacity <= 0.03) {
           p.fadeSpeed = -p.fadeSpeed;
         }
 
@@ -95,11 +95,11 @@ export function BackgroundParticles({ darkMode }: BackgroundParticlesProps) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         
-        const alpha = Math.max(0.01, Math.min(0.85, p.opacity));
+        const alpha = Math.max(0.02, Math.min(0.25, p.opacity));
         ctx.fillStyle = `${p.color}${alpha})`;
         
         if (darkMode) {
-          ctx.shadowBlur = p.size * 1.5;
+          ctx.shadowBlur = p.size * 1.2;
           ctx.shadowColor = `${p.color}${alpha})`;
         } else {
           ctx.shadowBlur = 0;
@@ -132,7 +132,7 @@ export function BackgroundParticles({ darkMode }: BackgroundParticlesProps) {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
+      className="fixed inset-0 pointer-events-none z-0 opacity-40"
       style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
     />
   );

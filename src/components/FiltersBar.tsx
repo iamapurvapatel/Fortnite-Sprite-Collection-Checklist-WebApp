@@ -9,6 +9,8 @@ interface FiltersBarProps {
   setViewMode: (mode: 'grid' | 'matrix') => void;
   activeCategory: string;
   setActiveCategory: (cat: string) => void;
+  onExportImage?: () => void;
+  isExporting?: boolean;
 }
 
 export const FiltersBar: React.FC<FiltersBarProps> = ({
@@ -18,6 +20,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
   setViewMode,
   activeCategory,
   setActiveCategory,
+  onExportImage,
+  isExporting,
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -57,18 +61,18 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
     <div className="w-full space-y-5">
       {/* 1. Full-Width Search Bar */}
       <div className="relative w-full">
-        <Icons.Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#F59E0B] dark:text-zinc-500" />
+        <Icons.Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A855F7] dark:text-[#C084FC]" />
         <input
           type="text"
           value={filters.search}
           onChange={handleSearchChange}
           placeholder="Search sprites by name, variant, rarity, or tags..."
-          className="w-full pl-11 pr-10 py-3 rounded-xl border border-[#F1E4C6] dark:border-white/5 bg-white dark:bg-white/[0.03] shadow-xs focus:bg-white focus:outline-none focus:ring-[4px] focus:ring-[#F59E0B]/12 focus:border-[#F59E0B]/50 text-sm placeholder-[#A38F72] dark:placeholder-zinc-500 transition-all text-[#221A12] dark:text-zinc-100"
+          className="w-full pl-11 pr-10 py-3 rounded-xl border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B]/80 shadow-xs focus:bg-white focus:outline-none focus:ring-[4px] focus:ring-[#A855F7]/15 focus:border-[#A855F7] text-sm placeholder-[#7C3AED] dark:placeholder-[#A78BFA] transition-all text-[#1E1A34] dark:text-[#F3E8FF]"
         />
         {filters.search && (
           <button
             onClick={() => handleSelectChange('search', '')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A38F72] hover:text-[#221A12] dark:hover:text-zinc-300 cursor-pointer"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7C3AED] hover:text-[#1E1A34] dark:hover:text-[#F3E8FF] cursor-pointer"
           >
             <Icons.X className="w-4 h-4" />
           </button>
@@ -76,40 +80,40 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
       </div>
 
       {/* 2. Horizontal Filter Row */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white/60 dark:bg-zinc-950/40 border border-[#F1E4C6] dark:border-white/5 p-1.5 rounded-xl shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white/80 dark:bg-[#18132B]/80 border border-[#E9D5FF] dark:border-[#2A2147] p-1.5 rounded-xl shadow-xs">
         {/* Left Side: Segmented Status Chips */}
         <div className="flex justify-center md:justify-start w-full md:w-auto">
-          <div className="flex bg-[#FFF6E6]/50 dark:bg-zinc-900/60 p-0.5 rounded-lg border border-[#F1E4C6]/40 dark:border-white/5">
+          <div className="flex bg-[#F3E8FF]/60 dark:bg-[#0D0B18]/60 p-0.5 rounded-lg border border-[#E9D5FF] dark:border-[#2A2147]">
             <button
               onClick={() => handleSelectChange('obtainedState', 'all')}
-              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-200 cursor-pointer ${
                 filters.obtainedState === 'all'
-                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-zinc-200'
+                  ? 'bg-[#A855F7] text-white shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:bg-[#A855F7]'
+                  : 'text-[#5B21B6] hover:text-[#1E1A34] hover:bg-[#F3E8FF] dark:text-[#C084FC] dark:hover:text-white'
               }`}
             >
               All
             </button>
             <button
               onClick={() => handleSelectChange('obtainedState', 'obtained')}
-              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                 filters.obtainedState === 'obtained'
-                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-purple-400'
+                  ? 'bg-[#A855F7] text-white shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:bg-[#A855F7]'
+                  : 'text-[#5B21B6] hover:text-[#1E1A34] hover:bg-[#F3E8FF] dark:text-[#C084FC] dark:hover:text-white'
               }`}
             >
-              <Icons.CheckCircle2 className="w-3.5 h-3.5" />
-              Obtained
+              <Icons.CheckCircle2 className="w-4 h-4" />
+              Collected
             </button>
             <button
               onClick={() => handleSelectChange('obtainedState', 'missing')}
-              className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                 filters.obtainedState === 'missing'
-                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-zinc-200'
+                  ? 'bg-[#A855F7] text-white shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:bg-[#A855F7]'
+                  : 'text-[#5B21B6] hover:text-[#1E1A34] hover:bg-[#F3E8FF] dark:text-[#C084FC] dark:hover:text-white'
               }`}
             >
-              <Icons.CircleDot className="w-3.5 h-3.5" />
+              <Icons.CircleDot className="w-4 h-4" />
               Missing
             </button>
           </div>
@@ -122,25 +126,25 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             onClick={() => setShowAdvanced(!showAdvanced)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 cursor-pointer ${
               showAdvanced || filters.rarity !== 'All' || filters.variant !== 'All' || activeCategory !== 'All'
-                ? 'bg-[#FFE4B5] border-[#F59E0B] text-[#221A12] dark:bg-white/10 dark:border-white/15 dark:text-white shadow-[0_2px_8px_rgba(245,158,11,0.1)]'
-                : 'bg-white dark:bg-white/5 border-[#F1E4C6] dark:border-white/5 text-[#6B5E48] dark:text-zinc-400 hover:bg-[#FFF6E6] dark:hover:bg-white/10 shadow-xs'
+                ? 'bg-[#F3E8FF] border-[#A855F7] text-[#1E1A34] dark:bg-[#251E44] dark:border-[#A855F7] dark:text-white shadow-[0_2px_8px_rgba(168,85,247,0.2)]'
+                : 'bg-white dark:bg-[#18132B] border-[#E9D5FF] dark:border-[#2A2147] text-[#5B21B6] dark:text-[#C084FC] hover:bg-[#FAF5FF] dark:hover:bg-[#251E44] shadow-xs'
             }`}
           >
-            <Icons.SlidersHorizontal className="w-3.5 h-3.5 text-[#F59E0B] dark:text-zinc-400" />
+            <Icons.SlidersHorizontal className="w-3.5 h-3.5 text-[#A855F7] dark:text-[#C084FC]" />
             <span>Filters</span>
             {(filters.rarity !== 'All' || filters.variant !== 'All' || activeCategory !== 'All') && (
-              <span className="w-1.5 h-1.5 bg-[#F59E0B] dark:bg-purple-500 rounded-full animate-pulse" />
+              <span className="w-1.5 h-1.5 bg-[#A855F7] dark:bg-[#C084FC] rounded-full animate-pulse" />
             )}
           </button>
 
           {/* View Mode Toggle */}
-          <div className="flex bg-[#FFF6E6]/50 dark:bg-zinc-900/60 p-0.5 rounded-lg border border-[#F1E4C6]/40 dark:border-white/5">
+          <div className="flex bg-[#F3E8FF]/60 dark:bg-[#0D0B18]/60 p-0.5 rounded-lg border border-[#E9D5FF] dark:border-[#2A2147]">
             <button
               onClick={() => setViewMode('matrix')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                 viewMode === 'matrix'
-                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-zinc-200'
+                  ? 'bg-[#A855F7] text-white shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:bg-[#A855F7]'
+                  : 'text-[#5B21B6] hover:text-[#1E1A34] hover:bg-[#F3E8FF] dark:text-[#C084FC] dark:hover:text-white'
               }`}
             >
               <Icons.Grid className="w-3.5 h-3.5" />
@@ -150,14 +154,36 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
               onClick={() => setViewMode('grid')}
               className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
                 viewMode === 'grid'
-                  ? 'bg-[#F59E0B] text-white shadow-[0_4px_12px_rgba(245,158,11,0.2)] dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-[#6B5E48] hover:text-[#221A12] hover:bg-[#FFE4B5]/30 dark:text-zinc-400 dark:hover:text-zinc-200'
+                  ? 'bg-[#A855F7] text-white shadow-[0_4px_12px_rgba(168,85,247,0.3)] dark:bg-[#A855F7]'
+                  : 'text-[#5B21B6] hover:text-[#1E1A34] hover:bg-[#F3E8FF] dark:text-[#C084FC] dark:hover:text-white'
               }`}
             >
               <Icons.LayoutGrid className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Grid</span>
             </button>
           </div>
+
+          {/* Export Poster Button (Placed right next to View Mode Toggle) */}
+          {onExportImage && (
+            <button
+              onClick={onExportImage}
+              disabled={isExporting}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-200 cursor-pointer bg-white dark:bg-[#18132B] border-[#E9D5FF] dark:border-[#2A2147] text-[#1E1A34] dark:text-[#F3E8FF] hover:bg-[#FAF5FF] dark:hover:bg-[#251E44] shadow-xs disabled:opacity-50"
+              title="Export obtained sprites as high-res poster image"
+            >
+              {isExporting ? (
+                <>
+                  <Icons.Loader2 className="w-3.5 h-3.5 text-[#A855F7] dark:text-[#C084FC] animate-spin" />
+                  <span className="hidden sm:inline">Exporting...</span>
+                </>
+              ) : (
+                <>
+                  <Icons.Download className="w-3.5 h-3.5 text-[#A855F7] dark:text-[#C084FC]" />
+                  <span>Export</span>
+                </>
+              )}
+            </button>
+          )}
 
           {/* Reset Filters Icon Button */}
           {isFiltered && (
@@ -174,17 +200,17 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
 
       {/* 3. Expandable Advanced Option Panel */}
       {showAdvanced && (
-        <div className="p-4 bg-white dark:bg-zinc-900/20 border border-[#F1E4C6] dark:border-white/5 rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fadeInScale shadow-[0_8px_24px_rgba(180,120,20,0.06)]">
+        <div className="p-4 bg-white dark:bg-[#18132B] border border-[#E9D5FF] dark:border-[#2A2147] rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fadeInScale shadow-xs">
           {/* Rarity Selector */}
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-[#A38F72] dark:text-zinc-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-[#7C3AED] dark:text-[#A78BFA] uppercase tracking-wider">
               Rarity Tier
             </label>
             <div className="relative">
               <select
                 value={filters.rarity}
                 onChange={(e) => handleSelectChange('rarity', e.target.value)}
-                className="w-full pl-3 pr-8 py-2 rounded-lg border border-[#F1E4C6] dark:border-white/5 bg-white dark:bg-[#0c0c0e] text-xs text-[#221A12] dark:text-zinc-200 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/10"
+                className="w-full pl-3 pr-8 py-2 rounded-lg border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B] text-xs text-[#1E1A34] dark:text-[#F3E8FF] appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A855F7]/20"
               >
                 <option value="All">All Rarities</option>
                 {rarities.map((r) => (
@@ -193,20 +219,20 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                   </option>
                 ))}
               </select>
-              <Icons.ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#6B5E48] pointer-events-none" />
+              <Icons.ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#5B21B6] dark:text-[#C084FC] pointer-events-none" />
             </div>
           </div>
 
           {/* Variant Selector */}
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-[#A38F72] dark:text-zinc-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-[#7C3AED] dark:text-[#A78BFA] uppercase tracking-wider">
               Sprite Variant
             </label>
             <div className="relative">
               <select
                 value={filters.variant}
                 onChange={(e) => handleSelectChange('variant', e.target.value)}
-                className="w-full pl-3 pr-8 py-2 rounded-lg border border-[#F1E4C6] dark:border-white/5 bg-white dark:bg-[#0c0c0e] text-xs text-[#221A12] dark:text-zinc-200 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/10"
+                className="w-full pl-3 pr-8 py-2 rounded-lg border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B] text-xs text-[#1E1A34] dark:text-[#F3E8FF] appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A855F7]/20"
               >
                 <option value="All">All Variants</option>
                 {variants.map((v) => (
@@ -215,20 +241,20 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                   </option>
                 ))}
               </select>
-              <Icons.ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#6B5E48] pointer-events-none" />
+              <Icons.ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#5B21B6] dark:text-[#C084FC] pointer-events-none" />
             </div>
           </div>
 
           {/* Sort By Selector */}
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-[#A38F72] dark:text-zinc-500 uppercase tracking-wider">
+            <label className="text-[10px] font-bold text-[#7C3AED] dark:text-[#A78BFA] uppercase tracking-wider">
               Sort Sequence
             </label>
             <div className="relative">
               <select
                 value={filters.sortBy}
                 onChange={(e) => handleSelectChange('sortBy', e.target.value)}
-                className="w-full pl-3 pr-8 py-2 rounded-lg border border-[#F1E4C6] dark:border-white/5 bg-white dark:bg-[#0c0c0e] text-xs text-[#221A12] dark:text-zinc-200 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/10"
+                className="w-full pl-3 pr-8 py-2 rounded-lg border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B] text-xs text-[#1E1A34] dark:text-[#F3E8FF] appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A855F7]/20"
               >
                 <option value="number-asc">Default (Number Asc)</option>
                 <option value="number-desc">Number Descending</option>
@@ -237,7 +263,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                 <option value="rarity-desc">Rarity High-Low</option>
                 <option value="rarity-asc">Rarity Low-High</option>
               </select>
-              <Icons.ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#6B5E48] pointer-events-none" />
+              <Icons.ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#5B21B6] dark:text-[#C084FC] pointer-events-none" />
             </div>
           </div>
         </div>

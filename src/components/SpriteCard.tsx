@@ -134,18 +134,18 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
       onClick={handleCardClick}
       className={`glass-card rounded-[20px] border border-transparent transition-all duration-300 relative group overflow-hidden flex flex-col justify-between select-none ${
         isUnreleased
-          ? 'bg-[#FFFDFA]/40 dark:bg-zinc-900/40 opacity-50 cursor-not-allowed'
+          ? 'bg-[#F6F4FE]/40 dark:bg-[#18132B]/40 opacity-50 cursor-not-allowed'
           : isMastered
-          ? 'bg-[#FFFFFF] dark:bg-zinc-900/45 cursor-pointer active:scale-[0.98] shadow-[0_12px_32px_rgba(245,158,11,0.14)] hover:shadow-[0_16px_36px_rgba(245,158,11,0.22)] hover:-translate-y-1'
+          ? 'bg-[#FFFFFF] dark:bg-[#18132B]/90 cursor-pointer active:scale-[0.98] shadow-[0_12px_32px_rgba(168,85,247,0.18)] hover:shadow-[0_16px_36px_rgba(168,85,247,0.28)] hover:-translate-y-1'
           : isObtained
-          ? 'bg-[#FFFFFF] dark:bg-zinc-900/45 cursor-pointer active:scale-[0.98] shadow-[0_8px_24px_rgba(180,120,20,0.06)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.12)] hover:-translate-y-1'
-          : 'bg-[#FFFDFA]/80 dark:bg-white/[0.015] hover:bg-[#FFF6E6]/60 dark:hover:bg-white/[0.04] opacity-95 hover:opacity-100 cursor-pointer active:scale-[0.98] shadow-[0_4px_12px_rgba(180,120,20,0.03)] hover:shadow-[0_8px_24px_rgba(180,120,20,0.06)] hover:-translate-y-0.5'
+          ? 'bg-[#FFFFFF] dark:bg-[#18132B]/80 cursor-pointer active:scale-[0.98] shadow-[0_8px_24px_rgba(168,85,247,0.08)] hover:shadow-[0_12px_28px_rgba(168,85,247,0.18)] hover:-translate-y-1'
+          : 'bg-[#FFFFFF]/80 dark:bg-[#18132B]/50 hover:bg-[#FAF5FF]/80 dark:hover:bg-[#251E44]/60 opacity-95 hover:opacity-100 cursor-pointer active:scale-[0.98] shadow-[0_4px_12px_rgba(168,85,247,0.04)] hover:shadow-[0_8px_24px_rgba(168,85,247,0.1)] hover:-translate-y-0.5'
       }`}
       style={{
         boxShadow: !isUnreleased && isMastered
-          ? `0 16px 36px -8px rgba(245, 158, 11, 0.18), 0 8px 24px rgba(180,120,20,0.08), inset 0 1px 3px rgba(251,191,36,0.2)`
+          ? `0 16px 36px -8px rgba(168, 85, 247, 0.22), 0 8px 24px rgba(168, 85, 247, 0.12), inset 0 1px 3px rgba(192, 132, 252, 0.3)`
           : !isUnreleased && isObtained
-          ? `0 12px 28px -8px rgba(245, 158, 11, 0.12), 0 8px 24px rgba(180,120,20,0.05), inset 0 1px 2px rgba(255,255,255,0.7)`
+          ? `0 12px 28px -8px rgba(168, 85, 247, 0.15), 0 8px 24px rgba(168, 85, 247, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.8)`
           : undefined,
       }}
     >
@@ -157,53 +157,48 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
         />
       )}
 
-      {/* Top action row */}
-      <div className="p-3 flex items-center justify-between relative z-20">
-        {/* ID tag */}
-        <span className="font-mono text-[9px] font-extrabold text-[#A38F72] dark:text-zinc-500 opacity-80">
-          #{id.replace(/[a-z]/gi, '').padStart(3, '0')}
-        </span>
-
+      {/* Top action row with Collect (top-left) & Master (top-right) Icon Buttons */}
+      <div className="p-2.5 flex items-center justify-between relative z-20">
         {isUnreleased ? (
-          <span className="inline-flex items-center gap-1 text-[8px] font-black tracking-wider text-rose-500 dark:text-rose-400 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-0.5 rounded-md">
-            <Icons.Lock className="w-2.5 h-2.5" /> COMING SOON
+          <span className="inline-flex items-center gap-1 text-[9px] font-black tracking-wider text-rose-500 dark:text-rose-400 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-1 rounded-md">
+            <Icons.Lock className="w-3 h-3" /> COMING SOON
           </span>
         ) : (
-          <div className="flex items-center gap-1">
-            {/* Mastered Button */}
+          <div className="flex items-center justify-between w-full">
+            {/* Top-Left: Collect Checkmark Button */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                if (onToggleMastered) onToggleMastered(id);
+                onToggleObtained(id);
               }}
-              className={`p-1.5 rounded-lg transition-all duration-200 cursor-pointer border ${
-                isMastered
-                  ? 'text-amber-500 dark:text-amber-400 bg-amber-500/15 dark:bg-amber-500/30 border-amber-500/30 shadow-xs'
-                  : 'text-[#A38F72] dark:text-[#9F8F75] hover:text-amber-500 dark:hover:text-amber-400 border-transparent hover:bg-[#FFF6E6]/50 dark:hover:bg-[#F5B335]/15'
+              className={`w-9 h-9 rounded-xl transition-all duration-200 cursor-pointer border select-none flex items-center justify-center ${
+                isObtained
+                  ? 'bg-emerald-500/20 dark:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                  : 'bg-white/90 dark:bg-[#18132B]/90 text-slate-400 dark:text-zinc-400 border-[#E9D5FF] dark:border-[#2A2147] hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30'
               }`}
-              title={isMastered ? "Unmark Mastered" : "Mark as Mastered"}
+              title={isObtained ? "Collected (Click to unmark)" : "Click to mark as Collected"}
             >
-              <Icons.Sparkles className={`w-3.5 h-3.5 ${isMastered ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : ''}`} />
+              <Icons.Check className={`w-5 h-5 ${isObtained ? 'stroke-[3] text-emerald-600 dark:text-emerald-300' : 'stroke-[2.5]'}`} />
             </button>
 
-            {/* Obtained Toggle Icon */}
-            <div
-              className={`p-1.5 rounded-lg transition-all duration-200 border border-transparent ${
-                isMastered
-                  ? 'text-amber-500 bg-amber-500/10'
-                  : isObtained
-                  ? 'text-emerald-600 bg-[#E6F9EC]'
-                  : 'text-[#D6C9AA] group-hover:text-emerald-500'
+            {/* Top-Right: Master Star Button */}
+            <button
+              disabled={!isObtained}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onToggleMastered && isObtained) onToggleMastered(id);
+              }}
+              className={`w-9 h-9 rounded-xl transition-all duration-200 border select-none flex items-center justify-center ${
+                !isObtained
+                  ? 'opacity-30 cursor-not-allowed bg-gray-100/40 dark:bg-zinc-900/40 text-gray-400 border-transparent'
+                  : isMastered
+                  ? 'bg-amber-500/20 dark:bg-amber-500/30 text-amber-500 dark:text-amber-300 border-amber-500/60 shadow-[0_0_12px_rgba(245,158,11,0.4)] cursor-pointer'
+                  : 'bg-white/90 dark:bg-[#18132B]/90 text-slate-400 dark:text-zinc-400 border-[#E9D5FF] dark:border-[#2A2147] hover:text-amber-500 hover:border-amber-500/50 hover:bg-amber-50/60 dark:hover:bg-amber-950/30 cursor-pointer'
               }`}
+              title={!isObtained ? "Collect sprite first to master" : isMastered ? "Mastered (Click to unmark)" : "Click to mark as Mastered"}
             >
-              {isMastered ? (
-                <Icons.Sparkle className="w-4 h-4 fill-amber-500" />
-              ) : isObtained ? (
-                <Icons.CheckCircle2 className="w-4 h-4" />
-              ) : (
-                <Icons.Circle className="w-4 h-4" />
-              )}
-            </div>
+              <Icons.Star className={`w-5 h-5 ${isMastered ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : 'stroke-[2]'}`} />
+            </button>
           </div>
         )}
       </div>
@@ -216,19 +211,19 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
             onOpenDetail(sprite);
           }
         }}
-        className={`flex flex-col items-center justify-center py-2.5 relative z-10 select-none cursor-pointer group-hover:scale-105 transition-transform duration-300 ${isUnreleased ? 'filter blur-[3px] opacity-40 grayscale group-hover:blur-none group-hover:opacity-100 group-hover:grayscale-0' : ''}`}
-        title="Click sprite to view details"
+        className={`flex flex-col items-center justify-center py-2.5 relative z-10 select-none group-hover:scale-105 transition-transform duration-300 ${onOpenDetail ? 'cursor-pointer' : ''} ${isUnreleased ? 'filter blur-[3px] opacity-40 grayscale group-hover:blur-none group-hover:opacity-100 group-hover:grayscale-0' : ''}`}
+        title={onOpenDetail ? "Click sprite to view details" : undefined}
       >
         <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size="md" />
       </div>
 
       {/* Footer Details */}
-      <div className="p-3 border-t border-[#F1E4C6]/40 dark:border-white/5 bg-[#FFFDF7]/50 dark:bg-white/[0.02] flex flex-col gap-1.5 relative z-10 flex-1 justify-end">
+      <div className="p-3 border-t border-[#E9D5FF]/60 dark:border-[#2A2147] bg-[#FAF5FF]/50 dark:bg-[#18132B]/60 flex flex-col gap-1.5 relative z-10 flex-1 justify-end">
         <div>
-          <h4 className={`text-xs font-black text-[#221A12] dark:text-gray-200 transition-colors truncate ${!isUnreleased ? 'group-hover:text-[#F59E0B]' : ''}`}>
+          <h4 className={`text-xs font-black text-[#1E1A34] dark:text-[#F3E8FF] transition-colors truncate ${!isUnreleased ? 'group-hover:text-[#A855F7] dark:group-hover:text-[#C084FC]' : ''}`}>
             {name}
           </h4>
-          <span className="text-[9px] text-[#6B5E48] dark:text-gray-500 font-extrabold tracking-tight uppercase">
+          <span className="text-[9px] text-[#5B21B6] dark:text-[#A78BFA] font-extrabold tracking-tight uppercase">
             {category} Collection
           </span>
         </div>
@@ -248,55 +243,9 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
 
         {/* Obtained Date badge */}
         {!isUnreleased && isObtained && obtainedDate && (
-          <div className="flex items-center gap-1 text-[8px] text-[#A38F72] dark:text-gray-500 font-mono mt-0.5 pt-0.5 border-t border-transparent">
+          <div className="flex items-center gap-1 text-[8px] text-[#5B21B6] dark:text-[#A78BFA] font-mono mt-0.5 pt-0.5 border-t border-transparent">
             <Icons.Calendar className="w-2.5 h-2.5" />
             <span>Obtained: {formatObtainedDate(obtainedDate)}</span>
-          </div>
-        )}
-
-        {/* Checkbox Controls Row */}
-        {!isUnreleased && (
-          <div className="mt-2.5 pt-2 border-t border-transparent flex items-center justify-between gap-1.5">
-            {/* Collected Checkbox */}
-            <label
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1.5 cursor-pointer text-[10px] font-bold text-[#6B5E48] dark:text-zinc-400 hover:text-emerald-500 transition-colors select-none"
-            >
-              <input
-                type="checkbox"
-                checked={isObtained}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onToggleObtained(id);
-                }}
-                className="w-3.5 h-3.5 rounded border-[#A38F72] dark:border-zinc-700 text-emerald-500 focus:ring-emerald-500 focus:ring-opacity-25 accent-emerald-500 cursor-pointer"
-              />
-              <span>Collected</span>
-            </label>
-
-            {/* Mastered Checkbox */}
-            <label
-              onClick={(e) => e.stopPropagation()}
-              className={`flex items-center gap-1.5 text-[10px] font-bold transition-colors select-none ${
-                isObtained
-                  ? 'cursor-pointer text-[#6B5E48] dark:text-zinc-400 hover:text-amber-500'
-                  : 'cursor-not-allowed text-gray-300 dark:text-zinc-700 opacity-40'
-              }`}
-            >
-              <input
-                type="checkbox"
-                disabled={!isObtained}
-                checked={isMastered}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  if (onToggleMastered) onToggleMastered(id);
-                }}
-                className={`w-3.5 h-3.5 rounded border-[#A38F72] dark:border-zinc-700 text-amber-500 focus:ring-amber-500 focus:ring-opacity-25 accent-amber-500 ${
-                  isObtained ? 'cursor-pointer' : 'cursor-not-allowed'
-                }`}
-              />
-              <span>Mastered</span>
-            </label>
           </div>
         )}
       </div>

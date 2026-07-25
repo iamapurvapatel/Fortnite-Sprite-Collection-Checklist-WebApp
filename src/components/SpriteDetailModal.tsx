@@ -244,26 +244,26 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
 
       {/* Premium Full-Width Landscape Modal Container */}
       <div
-        className="bg-[#121214] border border-white/10 rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden relative z-10 flex flex-col md:grid md:grid-cols-12 md:h-[600px] text-white animate-[fadeInScale_0.3s_ease-out] max-h-[92vh] md:max-h-[600px]"
+        className="bg-[#18132B] border border-[#2A2147] rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden relative z-10 flex flex-col md:grid md:grid-cols-12 md:h-[600px] text-[#F3E8FF] animate-[fadeInScale_0.3s_ease-out] max-h-[92vh] md:max-h-[600px]"
         style={{
           boxShadow: isMastered
-            ? `0 25px 50px -12px rgba(245, 158, 11, 0.25), 0 0 45px -5px ${features.glowColor}50, 0 0 15px rgba(251, 191, 36, 0.3)`
+            ? `0 25px 50px -12px rgba(168, 85, 247, 0.35), 0 0 45px -5px ${features.glowColor}50, 0 0 15px rgba(192, 132, 252, 0.3)`
             : isObtained
-            ? `0 25px 50px -12px rgba(0,0,0,0.5), 0 0 35px -5px ${features.glowColor}30`
-            : `0 25px 50px -12px rgba(0,0,0,0.4)`,
+            ? `0 25px 50px -12px rgba(0,0,0,0.6), 0 0 35px -5px ${features.glowColor}30`
+            : `0 25px 50px -12px rgba(0,0,0,0.5)`,
         }}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-black/40 text-gray-400 hover:text-white hover:bg-black/60 transition-colors cursor-pointer z-50"
+          className="absolute top-4 right-4 p-2 rounded-full bg-black/40 text-gray-300 hover:text-white hover:bg-black/60 transition-colors cursor-pointer z-50"
         >
           <Icons.X className="w-5 h-5" />
         </button>
 
         {/* Left Column: Visual Card/Stage */}
         <div
-          className="md:col-span-5 flex flex-col items-center justify-center p-8 bg-zinc-950/70 relative overflow-hidden select-none h-60 md:h-full border-b md:border-b-0 md:border-r border-white/5"
+          className="md:col-span-5 flex flex-col items-center justify-center p-8 bg-[#0D0B18]/90 relative overflow-hidden select-none h-60 md:h-full border-b md:border-b-0 md:border-r border-[#2A2147]"
           style={{
             background: `radial-gradient(circle at center, ${features.glowColor}25 0%, transparent 70%)`,
           }}
@@ -274,21 +274,21 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
           {/* Mastered Button */}
           <button
             onClick={() => onToggleMastered && onToggleMastered(id)}
-            className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all duration-200 cursor-pointer z-40 border ${
+            className={`absolute top-4 left-4 px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all duration-200 cursor-pointer z-40 border shadow-sm ${
               isMastered
-                ? 'text-amber-400 bg-amber-400/20 border-amber-400/40 shadow-sm'
-                : 'text-zinc-400 hover:text-white bg-white/5 border-white/10 hover:bg-white/10'
+                ? 'text-[#F3E8FF] bg-[#A855F7]/30 border-[#A855F7]/60 shadow-[0_0_12px_rgba(168,85,247,0.3)]'
+                : 'text-purple-200 hover:text-white bg-white/10 border-white/20 hover:bg-white/20'
             }`}
             title={isMastered ? "Unmark Mastered" : "Mark as Mastered"}
           >
-            <Icons.Sparkles className={`w-3.5 h-3.5 ${isMastered ? 'fill-amber-400 text-amber-400' : ''}`} />
+            <Icons.Sparkles className={`w-4 h-4 ${isMastered ? 'fill-[#C084FC] text-[#C084FC]' : ''}`} />
             <span>{isMastered ? 'Mastered' : 'Master'}</span>
           </button>
 
           {/* Beautiful Ambient Background Circle */}
           <div
             className="absolute w-44 h-44 rounded-full blur-[48px] opacity-25"
-            style={{ backgroundColor: features.glowColor || '#0ea5e9' }}
+            style={{ backgroundColor: features.glowColor || '#a855f7' }}
           />
 
           {/* Large Sprite Visualizer */}
@@ -298,7 +298,7 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
         </div>
 
         {/* Right Column: Premium Game Database Details */}
-        <div className="md:col-span-7 p-6 sm:p-8 overflow-y-auto space-y-4 bg-[#121214] scrollbar-thin scrollbar-thumb-zinc-800">
+        <div className="md:col-span-7 p-6 sm:p-8 overflow-y-auto space-y-4 bg-[#18132B] scrollbar-thin scrollbar-thumb-[#2A2147]">
           <div className="space-y-3">
             {/* Main Header Title */}
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase font-display leading-none">
@@ -317,7 +317,7 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
                 {displayRarity.toUpperCase()}
               </span>
 
-              <span className="text-[9px] font-mono font-bold bg-[#1E1B4B]/30 text-zinc-400 border border-zinc-800/60 px-2 py-0.5 rounded-xs">
+              <span className="text-[9px] font-mono font-bold bg-[#251E44] text-[#C084FC] border border-[#2A2147] px-2 py-0.5 rounded-xs">
                 {dropChance}
               </span>
 
@@ -331,17 +331,17 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
 
           {/* Gradient Perk Banner (If Perk Exists) */}
           {perk && (
-            <div className="bg-gradient-to-r from-teal-200 via-pink-200 to-indigo-200 text-zinc-900 font-extrabold text-xs sm:text-xs px-4 py-2 rounded-lg leading-tight shadow-md border border-white/10">
+            <div className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 text-slate-950 font-extrabold text-xs sm:text-xs px-4 py-2 rounded-lg leading-tight shadow-md border border-white/20">
               {perk}
             </div>
           )}
 
           {/* Description & Leveling Scaling */}
           <div className="space-y-1.5">
-            <p className="text-zinc-200 text-sm font-medium leading-relaxed">
+            <p className="text-[#F3E8FF] text-sm font-medium leading-relaxed">
               {richDesc}
             </p>
-            <p className="text-zinc-400 text-[11px] leading-tight font-sans tracking-tight">
+            <p className="text-[#A78BFA] text-[11px] leading-tight font-sans tracking-tight">
               {powerScaling}
             </p>
           </div>
@@ -349,28 +349,28 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
           {/* 2x2 Info Grid Box */}
           <div className="grid grid-cols-2 gap-3 pt-1">
             {/* Location Box */}
-            <div className="bg-zinc-900/40 border border-white/5 p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
-              <span className="text-[8px] font-mono font-bold tracking-widest text-zinc-500 uppercase">LOCATION</span>
+            <div className="bg-[#251E44]/50 border border-[#2A2147] p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
+              <span className="text-[8px] font-mono font-bold tracking-widest text-[#A78BFA] uppercase">LOCATION</span>
               <span className="text-xs font-black text-white leading-tight mt-1">{location}</span>
             </div>
 
             {/* Variant Box */}
-            <div className="bg-zinc-900/40 border border-white/5 p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
-              <span className="text-[8px] font-mono font-bold tracking-widest text-zinc-500 uppercase">VARIANT</span>
+            <div className="bg-[#251E44]/50 border border-[#2A2147] p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
+              <span className="text-[8px] font-mono font-bold tracking-widest text-[#A78BFA] uppercase">VARIANT</span>
               <span className="text-xs font-black text-white leading-tight mt-1">{variantLabel}</span>
             </div>
 
             {/* Summon Cost Box */}
-            <div className="bg-zinc-900/40 border border-white/5 p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
-              <span className="text-[8px] font-mono font-bold tracking-widest text-zinc-500 uppercase">SUMMON COST</span>
+            <div className="bg-[#251E44]/50 border border-[#2A2147] p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
+              <span className="text-[8px] font-mono font-bold tracking-widest text-[#A78BFA] uppercase">SUMMON COST</span>
               <span className="text-sm font-black text-white leading-none mt-1">{Number(summonCost).toLocaleString()}</span>
             </div>
 
             {/* Drop Chances Box */}
-            <div className="bg-zinc-900/40 border border-white/5 p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
-              <span className="text-[8px] font-mono font-bold tracking-widest text-zinc-500 uppercase">DROP CHANCES</span>
+            <div className="bg-[#251E44]/50 border border-[#2A2147] p-3.5 rounded-xl flex flex-col justify-between min-h-[68px]">
+              <span className="text-[8px] font-mono font-bold tracking-widest text-[#A78BFA] uppercase">DROP CHANCES</span>
               <div className="flex flex-col mt-1">
-                <span className="text-[8px] font-mono font-black text-zinc-500 uppercase leading-none">SPRITE CHEST</span>
+                <span className="text-[8px] font-mono font-black text-[#A78BFA] uppercase leading-none">SPRITE CHEST</span>
                 <span className="text-xs font-black text-white leading-tight mt-0.5">{dropChance}</span>
               </div>
             </div>

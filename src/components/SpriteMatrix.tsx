@@ -40,6 +40,23 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
 
   return (
     <div className="w-full space-y-4 animate-fadeInScale">
+      {/* Helper Legend Banner for Matrix Mode Interactions */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-[#FFF6E6]/60 dark:bg-zinc-900/40 border border-[#F1E4C6] dark:border-zinc-800/50 text-[11px] text-[#6B5E48] dark:text-zinc-400">
+        <div className="flex items-center gap-4 flex-wrap font-mono">
+          <span className="flex items-center gap-1.5 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+            <strong>Tap Slot:</strong> Cycle (Obtained → Mastered ✨ → Reset)
+          </span>
+          <span className="flex items-center gap-1.5 font-semibold">
+            <Icons.Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+            <strong>Sparkles Icon:</strong> Quick Master
+          </span>
+        </div>
+        <span className="text-[10px] opacity-75 font-mono hidden sm:inline-block">
+          💡 Mastered sprites show up with a golden glow and star counts!
+        </span>
+      </div>
+
       {/* Non-scrolling container wrapper so only individual row variants scroll on mobile */}
       <div className="w-full space-y-4">
         {/* Visual Sketch Matching Header Section - Hidden on mobile because each card has its own name inside */}
@@ -111,7 +128,7 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                 </div>
 
                 {/* Right Columns: Interactive Slot Grid - Horizontally Scrollable on Mobile, Grid on Desktop */}
-                <div className="col-span-9 sm:col-span-10 flex sm:grid sm:grid-cols-7 gap-2 sm:gap-3 md:gap-4 items-center overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-none sm:scrollbar-default -mx-3 px-3 sm:mx-0 sm:px-0">
+                <div className="col-span-9 sm:col-span-10 flex sm:grid sm:grid-cols-7 gap-2.5 sm:gap-3.5 md:gap-4 items-center overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-none sm:scrollbar-default -mx-3 px-3 sm:mx-0 sm:px-0">
                   {/* 1. Basic Slot */}
                   <VariantSlot
                     sprite={basicSprite}
@@ -267,10 +284,12 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
     }
   };
 
+  const isMastered = masteredIds.includes(id);
+
   const handleSlotClick = (e: React.MouseEvent) => {
     if (isComingSoon) return;
     
-    // Prevent standard toggle obtained if a long press just occurred
+    // Prevent standard toggle if long press occurred
     if (isLongPressActive.current) {
       e.preventDefault();
       e.stopPropagation();
@@ -278,16 +297,24 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
       return;
     }
 
-    // Also guard against double-click or quick release touch issues
     if (Date.now() - touchStartTime.current > 500 && touchStartTime.current !== 0) {
       touchStartTime.current = 0;
       return;
     }
 
-    onToggleObtained(id);
+    // 3-State cycling for fast & easy collection tracking:
+    // 1) Unobtained -> Click -> Obtained
+    // 2) Obtained -> Click -> Mastered ✨
+    // 3) Mastered -> Click -> Reset (Unobtained)
+    if (!isObtained) {
+      onToggleObtained(id);
+    } else if (isObtained && !isMastered) {
+      if (onToggleMastered) onToggleMastered(id);
+    } else if (isMastered) {
+      if (onToggleMastered) onToggleMastered(id); // unmaster
+      onToggleObtained(id); // unobtain
+    }
   };
-
-  const isMastered = masteredIds.includes(id);
 
   return (
     <div
@@ -295,8 +322,8 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
       onTouchEnd={isComingSoon ? undefined : handleTouchEnd}
       onTouchMove={isComingSoon ? undefined : handleTouchMove}
       onClick={handleSlotClick}
-      className={`group relative aspect-[4/5] sm:aspect-square rounded-xl sm:rounded-2xl border border-transparent transition-all duration-300 flex flex-col items-center justify-center overflow-hidden cursor-pointer select-none w-[105px] sm:w-full flex-shrink-0 ${
-        compact ? 'p-0.5 sm:p-1' : 'p-1 sm:p-1.5'
+      className={`group relative aspect-square rounded-xl sm:rounded-2xl border border-transparent transition-all duration-300 flex flex-col items-center justify-center overflow-hidden cursor-pointer select-none w-[160px] sm:w-full flex-shrink-0 ${
+        compact ? 'p-1.5 sm:p-2' : 'p-2.5 sm:p-3'
       } ${
         isComingSoon
           ? 'bg-[#FFE4B5]/3 dark:bg-zinc-900/10 opacity-35 cursor-not-allowed'
@@ -315,61 +342,61 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
       }}
       title={`${name} (${variant})`}
     >
-      {/* Sprite ID / Number & Obtained status dot (Top-Left) */}
+      {/* Obtained status dot / Sparkle (Top-Left) */}
       {!compact && (
-        <span className="absolute top-1 left-1.5 text-[7px] sm:text-[9px] font-mono text-[#A38F72] dark:text-zinc-500 font-bold opacity-75 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-          #{id.replace(/[a-z]/gi, '').padStart(3, '0')}
+        <span className="absolute top-1.5 left-2 opacity-75 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
           {isMastered ? (
-            <Icons.Sparkle className="w-2.5 h-2.5 text-amber-500 fill-amber-500 animate-pulse shrink-0" />
+            <Icons.Sparkle className="w-3 h-3 text-amber-500 fill-amber-500 animate-pulse shrink-0" />
           ) : isObtained && !isComingSoon && (
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
           )}
         </span>
       )}
 
-      {/* Top right actions row */}
-      {!isComingSoon && (
-        <div className="absolute top-1 right-1 flex items-center gap-0.5 z-30 opacity-0 group-hover:opacity-100 transition-opacity">
-          {/* Mastered Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onToggleMastered) onToggleMastered(id);
-            }}
-            className={`flex items-center justify-center w-5 h-5 rounded border shadow-xs transition-all cursor-pointer ${
-              isMastered
-                ? 'bg-amber-500/20 dark:bg-amber-500/30 text-amber-500 dark:text-amber-400 border-amber-500/30'
-                : 'bg-[#FFFDFA]/80 dark:bg-[#1D1813]/60 border-transparent hover:bg-[#FFE4B5]/60 dark:hover:bg-[#F5B335]/20 text-[#A38F72] dark:text-[#9F8F75] hover:text-amber-500 dark:hover:text-amber-400'
-            }`}
-            title={isMastered ? "Unmark Mastered" : "Mark as Mastered"}
-          >
-            <Icons.Sparkles className={`w-2.5 h-2.5 ${isMastered ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : ''}`} />
-          </button>
-        </div>
-      )}
-
       {/* Coming Soon Lock */}
       {isComingSoon && (
-        <Icons.Lock className="w-3.5 h-3.5 text-[#F59E0B]/50 dark:text-rose-400/60 animate-pulse" />
+        <Icons.Lock className="w-4 h-4 text-[#F59E0B]/50 dark:text-rose-400/60 animate-pulse" />
       )}
 
       {/* Central Sprite Art */}
       {!isComingSoon && (
         <div
-          className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110 pb-2 ${
-            compact ? 'w-8 h-8 sm:w-10 sm:h-10' : 'w-14 h-14 sm:w-20 sm:h-20'
+          className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110 pb-1 ${
+            compact ? 'w-12 h-12 sm:w-14 sm:h-14' : 'w-36 h-36 aspect-square'
           } ${
             !isObtained ? 'opacity-30 filter grayscale-[15%] dark:opacity-25' : ''
           }`}
         >
-          <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size={compact ? "xs" : "md"} />
+          <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size={compact ? "sm" : "md"} />
         </div>
       )}
 
-      {/* Variant Name centered at the bottom */}
-      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[7px] sm:text-[8px] font-mono font-black text-[#A38F72] dark:text-zinc-500 uppercase tracking-tighter text-center w-full truncate px-0.5 opacity-80 group-hover:opacity-100 transition-opacity">
+      {/* Variant Name at bottom-left */}
+      <span className="absolute bottom-2 left-2 text-[8.5px] sm:text-[10px] font-mono font-black text-[#A38F72] dark:text-zinc-500 uppercase tracking-tighter truncate max-w-[55%] opacity-80 group-hover:opacity-100 transition-opacity">
         {variant}
       </span>
+
+      {/* Bottom-right Mastered Quick Action Button */}
+      {!isComingSoon && (
+        <div className={`absolute bottom-1.5 right-1.5 z-30 transition-opacity ${
+          isMastered ? 'opacity-100' : isObtained ? 'opacity-80 group-hover:opacity-100' : 'opacity-0 group-hover:opacity-100'
+        }`}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onToggleMastered) onToggleMastered(id);
+            }}
+            className={`flex items-center justify-center w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-lg border shadow-xs transition-all cursor-pointer ${
+              isMastered
+                ? 'bg-amber-500 text-white border-amber-400 shadow-amber-500/30 scale-105'
+                : 'bg-white/95 dark:bg-zinc-800/95 border-zinc-200/80 dark:border-zinc-700 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-zinc-400 hover:text-amber-500'
+            }`}
+            title={isMastered ? "Mastered! Click to unmark" : "Mark as Mastered"}
+          >
+            <Icons.Sparkles className={`w-4 h-4 ${isMastered ? 'fill-white text-white animate-pulse' : ''}`} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -377,7 +404,7 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
 // Clean Placeholder for Non-existent slots
 const EmptySlot: React.FC = () => {
   return (
-    <div className="w-[105px] sm:w-full flex-shrink-0 aspect-[4/5] sm:aspect-square rounded-xl sm:rounded-2xl border border-transparent bg-[#FFE4B5]/2 dark:bg-white/[0.005] flex items-center justify-center opacity-25 pointer-events-none select-none">
+    <div className="w-[160px] sm:w-full flex-shrink-0 aspect-square rounded-xl sm:rounded-2xl border border-transparent bg-[#FFE4B5]/2 dark:bg-white/[0.005] flex items-center justify-center opacity-25 pointer-events-none select-none">
       <span className="text-[10px] font-mono font-bold text-[#A38F72] dark:text-zinc-600">-</span>
     </div>
   );
