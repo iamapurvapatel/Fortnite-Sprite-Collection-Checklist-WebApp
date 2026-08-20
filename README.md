@@ -1,27 +1,33 @@
-# ✨ MySprites✨
+# ✨ MySprites ✨
 
-> A highly polished, interactive, and beautifully animated **Fortnite Sprite Collection Checklist** companion app! Powered by a custom-crafted **Honey Glow Design System** 🍯 and dynamic procedurally-rendered vector graphics.
+> A highly polished, interactive, and responsive **Fortnite Sprite Collection Checklist** companion app! Powered by a versatile dual-mode layout (Grid & Matrix), complete Chapter 7 Season 4 sprite coverage, dynamic procedurally-rendered vector graphics, and real-time mastery tracking.
 
 ---
 
 ## 🚀 Key Features
 
-*   **🎮 Procedural Vector Engines** — Every Sprite is rendered with dynamic vector shapes, customizable expressions (cute, winking, sleepy), and gorgeous animated particle effects!
-*   **📊 Live Stats Dashboard** — Monitor your collection progress in real time with dynamic charts, completion percentages, and category tracking.
-*   **💾 Auto-Save & Sync** — Never lose your progress! Your collection states are saved locally instantly.
-*   **🎨 Honey Glow Design System** — A custom, warm, eye-friendly twilight-dark canvas paired with soft golden glows and gorgeous layout transitions.
-*   **🔍 Advanced Search & Filter** — Filter by category, rarity, state (Obtained vs. Missing), or search by name to find exactly what you're looking for!
-*   **🖼️ Poster Exporter** — Show off your collection! Export a beautifully designed 1:1 square poster of your collected Sprites with a single click.
+*   **⚡ Chapter 7 Season 4 Ready** — Full support for all C7S4 sprite families (Basic, Gold, CheatMaster variants) plus legacy season compatibility.
+*   **📐 Dual Layout Views**:
+    *   **Grid View**: High-detail collectible cards with category filtering, rarity badges, and quick-toggle action controls.
+    *   **Matrix View**: Compact, tabular family-by-variant grid with elongated slots and streamlined visual status scanning.
+*   **🌟 Interactive Mastery Tracking** — Dedicated **"Mastered"** status checkboxes on every card and matrix slot with glowing gold accents and completion badges.
+*   **☀️ Default Warm Light Mode & Dark Mode** — Clean, high-contrast light theme enabled by default, with instant dark mode toggling and local persistence.
+*   **🎮 Procedural Vector & High-Res Sprite Engines** — Dynamic vector SVG sprite generator with aura glows, animated particles, and full fallback coverage.
+*   **📊 Live Stats & Progress Dashboard** — Track obtained and mastered percentages, family completion statuses, and collection milestones in real time.
+*   **💾 Instant Auto-Save** — Fast client-side persistence for your obtained, mastered, favorite, and custom note records.
+*   **🔍 Search, Multi-Filter & Custom Notes** — Filter by family, rarity, season, obtained/missing status, or search by name. Add personal notes and timestamps to any sprite.
+*   **🖼️ Poster Exporter** — Export your custom collection showcase into a clean, shareable image.
 
 ---
 
 ## 🛠️ Built With
 
-*   ⚡ **Vite** — Blazing fast dev server & build tool
-*   ⚛️ **React 18** — Functional components with modern hooks
-*   🦕 **TypeScript** — Fully type-safe props, enums, and features
-*   🎨 **Tailwind CSS** — Utility-first aesthetic styling
-*   🌀 **Motion (Framer)** — Fluid, hardware-accelerated animations & page-state transitions
+*   ⚡ **Vite** — High-performance development server & bundling
+*   ⚛️ **React 18** — Modern functional components & state hooks
+*   🦕 **TypeScript** — Strictly typed interfaces, enums, and sprite schemas
+*   🎨 **Tailwind CSS** — Utility-first styling with responsive design and theme support
+*   🌀 **Motion (Framer)** — Smooth layout transitions, animations, and modals
+*   📊 **Recharts & Lucide Icons** — Dynamic collection progress analytics and crisp UI icons
 
 ---
 
@@ -29,25 +35,20 @@
 
 ```bash
 ├── 📁 src
-│   ├── 📁 components         # UI Components (Cards, Dashboards, Modals, etc.)
-│   │   ├── 🧩 BackgroundParticles.tsx # Immersive particle overlay
-│   │   ├── 🧩 ProceduralSprite.tsx   # Core Sprite renderer & SVG builder
-│   │   ├── 🧩 SpriteCard.tsx         # Interactive card with hover states
-│   │   └── 🧩 StatsDashboard.tsx     # Recharts collection summaries
-│   ├── 📁 data               # Static assets & procedurally generated data
-│   │   └── 📄 sprites.ts          # Complete Sprite list with metadata
-│   ├── 📄 types.ts           # Shared TypeScript interfaces & types
-│   └── 📄 App.tsx            # Main application coordinator & state engine
+│   ├── 📁 components
+│   │   ├── 🧩 SpriteMatrix.tsx        # Matrix/tabular family-variant view
+│   │   ├── 🧩 SpriteCard.tsx          # Grid collectible card component
+│   │   ├── 🧩 ProceduralSprite.tsx    # SVG generator & vector sprite engine
+│   │   ├── 🧩 SpriteDetailModal.tsx   # In-depth detail modal with notes & actions
+│   │   ├── 🧩 StatsDashboard.tsx      # Analytics & collection progress charts
+│   │   ├── 🧩 PosterExportModal.tsx   # Collection image export generator
+│   │   └── 🧩 BackgroundParticles.tsx # Immersive ambient background effects
+│   ├── 📁 data
+│   │   └── 📄 sprites.ts              # Complete sprite registry & metadata
+│   ├── 📄 types.ts                    # Core TypeScript definitions & schemas
+│   ├── 📄 index.css                   # Global Tailwind styling & theme tokens
+│   └── 📄 App.tsx                     # Main application layout, state, & filters
 ```
-
----
-
-## 🍯 The Honey Glow Philosophy
-
-The app is built around the **Honey Glow** aesthetic—inspired by cosy autumn twilight forest vibes. It features:
-1.  **Warm Accents**: Soft ambers, rich caramels, and honey-gold gradients (`#F5B335` to `#FFD978`).
-2.  **Immersive Backgrounds**: Deep carbon-slates (`#16120E`) combined with gentle radial lighting to mimic glowing fireflies in the dark.
-3.  **Delightful Feedback**: Subtle physical scale lifts on hover, smooth modal expansion, and toggle animations to keep user interaction feeling organic.
 
 ---
 
