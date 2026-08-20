@@ -1,7 +1,18 @@
+export type SeasonId = 'c7s4' | 'c7s3';
+
+export interface SeasonInfo {
+  id: SeasonId;
+  name: string;
+  shortName: string;
+  description: string;
+  badge?: string;
+  isDefault?: boolean;
+}
+
 export interface SpriteFeatures {
   shape: 'round' | 'star' | 'cube' | 'diamond' | 'cloud' | 'ghost';
   eyes: 'cute' | 'cool' | 'wink' | 'sleepy' | 'star' | 'glasses';
-  accessory: 'none' | 'crown' | 'hat' | 'bow' | 'headphones' | 'halo';
+  accessory?: 'none' | 'crown' | 'hat' | 'bow' | 'headphones' | 'halo';
   glowColor: string;
   bodyColor: string;
   accentColor: string;
@@ -11,11 +22,11 @@ export interface SpriteFeatures {
   imageUrl?: string;
 }
 
-export type SpriteCategory = 'Basic' | 'Gold' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem' | 'Cube';
+export type SpriteCategory = 'Basic' | 'Gold' | 'CheatMaster' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem' | 'Cube';
 
 export type SpriteRarity = 'Rare' | 'Epic' | 'Legendary' | 'Mythic' | 'Special';
 
-export type SpriteVariant = 'Basic' | 'Gold' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem' | 'Cube';
+export type SpriteVariant = 'Basic' | 'Gold' | 'CheatMaster' | 'Gummy' | 'Galaxy' | 'Holofoil' | 'Gem' | 'Cube';
 
 export interface Sprite {
   id: string;
@@ -27,6 +38,7 @@ export interface Sprite {
   description: string;
   features: SpriteFeatures;
   unreleased?: boolean;
+  season?: SeasonId;
 }
 
 export interface CategoryDetail {

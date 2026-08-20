@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { Sprite, ChecklistState, Filters } from './types';
-import { SPRITES, CUSTOM_FAMILY_ORDER, VARIANT_ORDER } from './data/sprites';
+import { useState, useEffect, useMemo } from 'react';
+import { Sprite, ChecklistState, Filters, SeasonId } from './types';
+import { SPRITES_BY_SEASON, CUSTOM_FAMILY_ORDER, VARIANT_ORDER, SEASONS } from './data/sprites';
 import { Header } from './components/Header';
+import { SeasonTabs } from './components/SeasonTabs';
 import { StatsDashboard } from './components/StatsDashboard';
 import { FiltersBar } from './components/FiltersBar';
 import { SpriteCard } from './components/SpriteCard';
@@ -12,29 +13,62 @@ import { ProceduralSprite } from './components/ProceduralSprite';
 import { BackgroundParticles } from './components/BackgroundParticles';
 import * as Icons from 'lucide-react';
 
-export default function App() {
-  // --- STATE ---
-  const [checklist, setChecklist] = useState<ChecklistState>(() => {
-    try {
-      const savedObtained = localStorage.getItem('sprite_obtained');
-      const savedMastered = localStorage.getItem('sprite_mastered');
-      const savedFavorites = localStorage.getItem('sprite_favorites');
-      const savedNotes = localStorage.getItem('sprite_notes');
-      const savedDates = localStorage.getItem('sprite_obtained_dates');
-      const savedMasteredDates = localStorage.getItem('sprite_mastered_dates');
+const getInitialChecklistForSeason = (season: SeasonId): ChecklistState => {
+  try {
+    // For c7s3, also check legacy key 'sprite_obtained' if new key not found
+    const savedObtained =
+      localStorage.getItem(`sprite_${season}_obtained`) ||
+      (season === 'c7s3' ? localStorage.getItem('sprite_obtained') : null);
+    const savedMastered =
+      localStorage.getItem(`sprite_${season}_mastered`) ||
+      (season === 'c7s3' ? localStorage.getItem('sprite_mastered') : null);
+    const savedFavorites =
+      localStorage.getItem(`sprite_${season}_favorites`) ||
+      (season === 'c7s3' ? localStorage.getItem('sprite_favorites') : null);
+    const savedNotes =
+      localStorage.getItem(`sprite_${season}_notes`) ||
+      (season === 'c7s3' ? localStorage.getItem('sprite_notes') : null);
+    const savedDates =
+      localStorage.getItem(`sprite_${season}_obtained_dates`) ||
+      (season === 'c7s3' ? localStorage.getItem('sprite_obtained_dates') : null);
+    const savedMasteredDates =
+      localStorage.getItem(`sprite_${season}_mastered_dates`) ||
+      (season === 'c7s3' ? localStorage.getItem('sprite_mastered_dates') : null);
 
-      return {
-        obtained: savedObtained ? JSON.parse(savedObtained) : [],
-        mastered: savedMastered ? JSON.parse(savedMastered) : [],
-        favorites: savedFavorites ? JSON.parse(savedFavorites) : [],
-        notes: savedNotes ? JSON.parse(savedNotes) : {},
-        obtainedDates: savedDates ? JSON.parse(savedDates) : {},
-        masteredDates: savedMasteredDates ? JSON.parse(savedMasteredDates) : {},
-      };
+    return {
+      obtained: savedObtained ? JSON.parse(savedObtained) : [],
+      mastered: savedMastered ? JSON.parse(savedMastered) : [],
+      favorites: savedFavorites ? JSON.parse(savedFavorites) : [],
+      notes: savedNotes ? JSON.parse(savedNotes) : {},
+      obtainedDates: savedDates ? JSON.parse(savedDates) : {},
+      masteredDates: savedMasteredDates ? JSON.parse(savedMasteredDates) : {},
+    };
+  } catch {
+    return { obtained: [], mastered: [], favorites: [], notes: {}, obtainedDates: {}, masteredDates: {} };
+  }
+};
+
+export default function App() {
+  // --- SEASON STATE (Default to c7s4) ---
+  const [activeSeason, setActiveSeason] = useState<SeasonId>(() => {
+    try {
+      const savedSeason = localStorage.getItem('sprite_active_season') as SeasonId;
+      if (savedSeason && (savedSeason === 'c7s3' || savedSeason === 'c7s4')) {
+        return savedSeason;
+      }
+      return 'c7s4'; // Default to Chapter 7 Season 4
     } catch {
-      return { obtained: [], mastered: [], favorites: [], notes: {}, obtainedDates: {}, masteredDates: {} };
+      return 'c7s4';
     }
   });
+
+  // --- CHECKLIST STATE PER SEASON ---
+  const [checklists, setChecklists] = useState<Record<SeasonId, ChecklistState>>(() => ({
+    c7s4: getInitialChecklistForSeason('c7s4'),
+    c7s3: getInitialChecklistForSeason('c7s3'),
+  }));
+
+  const activeChecklist = checklists[activeSeason];
 
   const [filters, setFilters] = useState<Filters>({
     search: '',
@@ -53,9 +87,9 @@ export default function App() {
       if (savedTheme !== null) {
         return savedTheme === 'true';
       }
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      return false; // Default to light mode
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -75,19 +109,31 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [toastNotification, setToastNotification] = useState<{ title: string; description: string } | null>(null);
 
-  // --- PERSISTENCE EFFECT ---
+  // --- PERSIST ACTIVE SEASON ---
   useEffect(() => {
     try {
-      localStorage.setItem('sprite_obtained', JSON.stringify(checklist.obtained));
-      localStorage.setItem('sprite_mastered', JSON.stringify(checklist.mastered));
-      localStorage.setItem('sprite_favorites', JSON.stringify(checklist.favorites));
-      localStorage.setItem('sprite_notes', JSON.stringify(checklist.notes));
-      localStorage.setItem('sprite_obtained_dates', JSON.stringify(checklist.obtainedDates));
-      localStorage.setItem('sprite_mastered_dates', JSON.stringify(checklist.masteredDates));
+      localStorage.setItem('sprite_active_season', activeSeason);
+    } catch (err) {
+      console.error('Could not save active season', err);
+    }
+  }, [activeSeason]);
+
+  // --- PERSIST CHECKLIST STATES ---
+  useEffect(() => {
+    try {
+      (['c7s4', 'c7s3'] as SeasonId[]).forEach((sId) => {
+        const cl = checklists[sId];
+        localStorage.setItem(`sprite_${sId}_obtained`, JSON.stringify(cl.obtained));
+        localStorage.setItem(`sprite_${sId}_mastered`, JSON.stringify(cl.mastered));
+        localStorage.setItem(`sprite_${sId}_favorites`, JSON.stringify(cl.favorites));
+        localStorage.setItem(`sprite_${sId}_notes`, JSON.stringify(cl.notes));
+        localStorage.setItem(`sprite_${sId}_obtained_dates`, JSON.stringify(cl.obtainedDates));
+        localStorage.setItem(`sprite_${sId}_mastered_dates`, JSON.stringify(cl.masteredDates));
+      });
     } catch (err) {
       console.error('Could not save checklist state to localStorage', err);
     }
-  }, [checklist]);
+  }, [checklists]);
 
   // --- THEME EFFECT ---
   useEffect(() => {
@@ -113,29 +159,46 @@ export default function App() {
     }
   }, [viewMode]);
 
+  // Current season sprites list
+  const currentSeasonSprites = useMemo(() => {
+    return SPRITES_BY_SEASON[activeSeason] || SPRITES_BY_SEASON.c7s4;
+  }, [activeSeason]);
 
+  // Season counts for top tab indicators
+  const seasonCounts = useMemo(() => {
+    return {
+      c7s4: {
+        obtained: checklists.c7s4.obtained.length,
+        total: SPRITES_BY_SEASON.c7s4.length,
+      },
+      c7s3: {
+        obtained: checklists.c7s3.obtained.length,
+        total: SPRITES_BY_SEASON.c7s3.length,
+      },
+    };
+  }, [checklists]);
 
   // --- IMAGE POSTER EXPORT ENGINE (1080x1080 1:1) ---
   const handleExportImage = async () => {
-    const checkedIds = checklist.obtained;
-    const checkedSprites = SPRITES.filter((s) => checkedIds.includes(s.id));
+    const checkedIds = activeChecklist.obtained;
+    const checkedSprites = currentSeasonSprites.filter((s) => checkedIds.includes(s.id));
     if (checkedSprites.length === 0) {
       setToastNotification({
         title: 'Export Failed',
-        description: 'Please check/obtain at least one sprite to export your collection!',
+        description: 'Please check/obtain at least one sprite in this season to export your collection!',
       });
       setTimeout(() => setToastNotification(null), 4000);
       return;
     }
 
     setIsExporting(true);
+    const seasonLabel = activeSeason === 'c7s4' ? 'Chapter 7 Season 4' : 'Chapter 7 Season 3';
     setToastNotification({
       title: 'Generating Poster',
-      description: 'Assembling your 1080x1080 1:1 high-resolution sprite collection card...',
+      description: `Assembling your ${seasonLabel} 1080x1080 high-resolution collection poster...`,
     });
 
     try {
-      // Small pause to guarantee DOM nodes in our hidden renderer are complete
       await new Promise((resolve) => setTimeout(resolve, 600));
 
       const loadPromises = checkedSprites.map((sprite) => {
@@ -148,30 +211,30 @@ export default function App() {
           const svgEl = container.querySelector('svg');
           const imgEl = container.querySelector('img');
 
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
+          if (imgEl && imgEl.complete && imgEl.naturalWidth > 0) {
+            resolve(imgEl);
+            return;
+          }
 
-          if (imgEl) {
-            img.onload = () => resolve(img);
-            img.onerror = () => reject(new Error(`Failed to load image for ${sprite.name}`));
-            img.src = imgEl.src;
-          } else if (svgEl) {
-            try {
-              const svgString = new XMLSerializer().serializeToString(svgEl);
-              const svgWithDimensions = svgString
-                .replace('<svg', '<svg width="128" height="128"')
-                .replace(/xmlns="http:\/\/www\.w3\.org\/2000\/svg"/g, '')
-                .replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-
-              const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgWithDimensions);
-              img.onload = () => resolve(img);
-              img.onerror = () => reject(new Error(`Failed to load SVG for ${sprite.name}`));
-              img.src = svgDataUrl;
-            } catch (e) {
-              reject(e);
-            }
+          if (svgEl) {
+            const svgString = new XMLSerializer().serializeToString(svgEl);
+            const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = () => {
+              URL.revokeObjectURL(url);
+              resolve(img);
+            };
+            img.onerror = () => {
+              URL.revokeObjectURL(url);
+              reject(new Error(`Failed to render SVG for ${sprite.name}`));
+            };
+            img.src = url;
+          } else if (imgEl) {
+            imgEl.onload = () => resolve(imgEl);
+            imgEl.onerror = () => reject(new Error(`Failed to load image for ${sprite.name}`));
           } else {
-            reject(new Error(`No graphics found for sprite ${sprite.id}`));
+            reject(new Error(`No graphics found for sprite ${sprite.name}`));
           }
         });
       });
@@ -182,70 +245,52 @@ export default function App() {
       canvas.width = 1080;
       canvas.height = 1080;
       const ctx = canvas.getContext('2d');
-      if (!ctx) throw new Error('Failed to capture canvas 2D render context.');
+      if (!ctx) throw new Error('Could not initialize canvas context');
 
-      // Beautiful gradient background matching current active theme (Cosmic Arcana)
+      // 1. Background
       const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1080);
       if (darkMode) {
-        bgGrad.addColorStop(0, '#0D0B18'); // Cosmic Dark Obsidian
-        bgGrad.addColorStop(0.5, '#18132B'); // Indigo Night
-        bgGrad.addColorStop(1, '#0D0B18'); // Deep Astral Abyss
+        bgGrad.addColorStop(0, '#0D0B18');
+        bgGrad.addColorStop(0.5, '#18132B');
+        bgGrad.addColorStop(1, '#0D0B18');
       } else {
-        bgGrad.addColorStop(0, '#F6F4FE'); // Mystic Starlight Cream
-        bgGrad.addColorStop(0.5, '#FAF5FF'); // Soft Lavender Starlight
-        bgGrad.addColorStop(1, '#F3E8FF'); // Pale Arcane Purple
+        bgGrad.addColorStop(0, '#FAF5FF');
+        bgGrad.addColorStop(0.5, '#F3E8FF');
+        bgGrad.addColorStop(1, '#FAF5FF');
       }
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 1080, 1080);
 
-      // Ambient color glows
-      if (darkMode) {
-        ctx.fillStyle = 'rgba(168, 85, 247, 0.08)'; // Cosmic Violet glow
-        ctx.beginPath();
-        ctx.arc(200, 200, 450, 0, Math.PI * 2);
-        ctx.fill();
+      // Subtle border frame
+      ctx.strokeStyle = darkMode ? '#3B2D64' : '#E9D5FF';
+      ctx.lineWidth = 16;
+      ctx.strokeRect(8, 8, 1064, 1064);
 
-        ctx.fillStyle = 'rgba(6, 182, 212, 0.06)'; // Astral Cyan highlight
-        ctx.beginPath();
-        ctx.arc(880, 880, 550, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        ctx.fillStyle = 'rgba(168, 85, 247, 0.08)'; // Cosmic Violet glow
-        ctx.beginPath();
-        ctx.arc(200, 200, 450, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = 'rgba(6, 182, 212, 0.06)'; // Astral Cyan highlight
-        ctx.beginPath();
-        ctx.arc(880, 880, 550, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Top title
+      // 2. Header
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      const titleGrad = ctx.createLinearGradient(350, 45, 730, 45);
-      if (darkMode) {
-        titleGrad.addColorStop(0, '#A855F7'); // Cosmic Violet
-        titleGrad.addColorStop(0.5, '#C084FC'); // Starlight Violet
-        titleGrad.addColorStop(1, '#EC4899'); // Nebula Magenta
-      } else {
-        titleGrad.addColorStop(0, '#7E22CE'); // Deep Violet
-        titleGrad.addColorStop(0.5, '#9333EA'); // Cosmic Purple
-        titleGrad.addColorStop(1, '#C084FC'); // Bright Violet
-      }
-      ctx.fillStyle = titleGrad;
-      ctx.font = '900 38px "Inter", system-ui, sans-serif';
-      ctx.fillText('MY SPRITE COLLECTION', 540, 45);
+
+      ctx.fillStyle = darkMode ? '#F3E8FF' : '#1E1A34';
+      ctx.font = '900 38px "Plus Jakarta Sans", "Inter", system-ui, sans-serif';
+      ctx.fillText('MY SPRITES COLLECTION', 540, 42);
 
       // Subtitle
-      ctx.fillStyle = darkMode ? '#A78BFA' : '#5B21B6';
+      ctx.fillStyle = darkMode ? '#C084FC' : '#7C3AED';
       ctx.font = 'bold 16px "Inter", system-ui, sans-serif';
-      ctx.fillText(`${checkedSprites.length} of ${SPRITES.length} Sprites Collected • Sprite Checklist`, 540, 96);
+      const seasonHeading = activeSeason === 'c7s4' ? 'CHAPTER 7 SEASON 4' : 'CHAPTER 7 SEASON 3';
+      ctx.fillText(
+        `${seasonHeading} • ${checkedSprites.length} OF ${currentSeasonSprites.length} SPRITES OBTAINED (${Math.round(
+          (checkedSprites.length / currentSeasonSprites.length) * 100
+        )}%)`,
+        540,
+        92
+      );
 
-      // Arrange dynamic grid
+      // 3. Grid Calculation
       const N = checkedSprites.length;
-      const cols = Math.ceil(Math.sqrt(N));
+      let cols = Math.ceil(Math.sqrt(N * 1.15));
+      if (cols < 3) cols = 3;
+      if (cols > 11) cols = 11;
       const rows = Math.ceil(N / cols);
 
       const gridW = 980;
@@ -254,7 +299,6 @@ export default function App() {
       const cellH = Math.floor(gridH / rows);
       const cellSize = Math.min(cellW, cellH);
 
-      // Calculate starting coords to perfectly center grid
       const startX = 540 - (cols * cellSize) / 2;
       const startY = 150 + (830 - rows * cellSize) / 2;
 
@@ -272,7 +316,6 @@ export default function App() {
         const cardW = cellSize - margin * 2;
         const cardH = cellSize - margin * 2;
 
-        // Draw card plate
         ctx.fillStyle = darkMode ? 'rgba(24, 19, 43, 0.88)' : 'rgba(255, 255, 255, 0.9)';
         ctx.strokeStyle = darkMode ? '#2A2147' : '#E9D5FF';
         ctx.lineWidth = 1.2;
@@ -281,32 +324,26 @@ export default function App() {
         ctx.fill();
         ctx.stroke();
 
-        // Sprite bloom glow
         ctx.shadowColor = sprite.features.glowColor || (darkMode ? 'rgba(168, 85, 247, 0.35)' : 'rgba(168, 85, 247, 0.2)');
         ctx.shadowBlur = Math.max(8, cellSize * 0.12);
 
-        // Draw sprite
         const spriteSize = cardW * 0.62;
         const spriteX = cardX + (cardW - spriteSize) / 2;
-        const spriteY = cardY + (cardH - spriteSize) / 2 - (cardH * 0.08);
+        const spriteY = cardY + (cardH - spriteSize) / 2 - cardH * 0.08;
         ctx.drawImage(img, spriteX, spriteY, spriteSize, spriteSize);
 
-        // Reset shadow
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
 
-        // Draw text label inside card
         if (cardH > 52) {
           ctx.textAlign = 'center';
           ctx.textBaseline = 'bottom';
 
-          // Name
           const nameSize = Math.max(8, Math.floor(cardH * 0.095));
           ctx.font = `bold ${nameSize}px "Inter", system-ui, sans-serif`;
           ctx.fillStyle = darkMode ? '#F3E8FF' : '#1E1A34';
-          ctx.fillText(sprite.name, cardX + cardW / 2, cardY + cardH - (cardH * 0.18));
+          ctx.fillText(sprite.name, cardX + cardW / 2, cardY + cardH - cardH * 0.18);
 
-          // Variant subtitle
           const subSize = Math.max(7, Math.floor(cardH * 0.075));
           ctx.font = `600 ${subSize}px "Inter", system-ui, sans-serif`;
 
@@ -317,22 +354,21 @@ export default function App() {
             Galaxy: '#818CF8',
             Holofoil: '#06B6D4',
             Gem: '#10B981',
+            Cube: '#A855F7',
           };
           ctx.fillStyle = catColors[sprite.category] || (darkMode ? '#C084FC' : '#7C3AED');
-          ctx.fillText(sprite.variant, cardX + cardW / 2, cardY + cardH - (cardH * 0.06));
+          ctx.fillText(sprite.variant, cardX + cardW / 2, cardY + cardH - cardH * 0.06);
         }
       });
 
-      // Bottom footer branding
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
       ctx.fillStyle = darkMode ? '#7C3AED' : '#A78BFA';
       ctx.font = 'bold 11px "Courier New", Courier, monospace';
-      ctx.fillText('v1.2.0 • SPRITE CHECKLIST • POWERED BY SLEEK ASSISTANT', 540, 1055);
+      ctx.fillText(`MY SPRITES • ${activeSeason.toUpperCase()} • CHECKLIST POSTER`, 540, 1055);
 
-      // Trigger automatic save
       const link = document.createElement('a');
-      link.download = `my-sprites-${new Date().toISOString().slice(0, 10)}.png`;
+      link.download = `my-sprites-${activeSeason}-${new Date().toISOString().slice(0, 10)}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
 
@@ -353,145 +389,172 @@ export default function App() {
     }
   };
 
-  // --- ACTIONS ---
+  // --- ACTIONS (Current Season) ---
   const handleToggleObtained = (id: string) => {
-    const sprite = SPRITES.find((s) => s.id === id);
+    const sprite = currentSeasonSprites.find((s) => s.id === id);
     if (sprite?.unreleased) return;
 
-    setChecklist((prev) => {
-      const isObtained = prev.obtained.includes(id);
+    setChecklists((prev) => {
+      const current = prev[activeSeason];
+      const isObtained = current.obtained.includes(id);
       const newObtained = isObtained
-        ? prev.obtained.filter((item) => item !== id)
-        : [...prev.obtained, id];
+        ? current.obtained.filter((item) => item !== id)
+        : [...current.obtained, id];
 
-      const newDates = { ...prev.obtainedDates };
-      const newMasteredDates = { ...prev.masteredDates };
-      let newMastered = prev.mastered || [];
+      const newDates = { ...current.obtainedDates };
+      const newMasteredDates = { ...current.masteredDates };
+      let newMastered = current.mastered || [];
 
       if (!isObtained) {
         newDates[id] = new Date().toISOString();
       } else {
         delete newDates[id];
-        // Automatically remove from mastered if unobtained
         newMastered = newMastered.filter((item) => item !== id);
         delete newMasteredDates[id];
       }
 
       return {
         ...prev,
-        obtained: newObtained,
-        mastered: newMastered,
-        obtainedDates: newDates,
-        masteredDates: newMasteredDates,
+        [activeSeason]: {
+          ...current,
+          obtained: newObtained,
+          mastered: newMastered,
+          obtainedDates: newDates,
+          masteredDates: newMasteredDates,
+        },
       };
     });
   };
 
   const handleToggleMastered = (id: string) => {
-    const sprite = SPRITES.find((s) => s.id === id);
+    const sprite = currentSeasonSprites.find((s) => s.id === id);
     if (sprite?.unreleased) return;
 
-    setChecklist((prev) => {
-      const isObtained = prev.obtained.includes(id);
-      const isMastered = (prev.mastered || []).includes(id);
+    setChecklists((prev) => {
+      const current = prev[activeSeason];
+      const isObtained = current.obtained.includes(id);
+      const isMastered = (current.mastered || []).includes(id);
 
       if (!isMastered) {
-        // Mastering sprite: auto-obtain if not already obtained
-        const newObtained = isObtained ? prev.obtained : [...prev.obtained, id];
-        const newObtainedDates = { ...prev.obtainedDates };
+        const newObtained = isObtained ? current.obtained : [...current.obtained, id];
+        const newObtainedDates = { ...current.obtainedDates };
         if (!isObtained) {
           newObtainedDates[id] = new Date().toISOString();
         }
 
-        const newMastered = [...(prev.mastered || []), id];
-        const newMasteredDates = { ...prev.masteredDates, [id]: new Date().toISOString() };
+        const newMastered = [...(current.mastered || []), id];
+        const newMasteredDates = { ...current.masteredDates, [id]: new Date().toISOString() };
 
         return {
           ...prev,
-          obtained: newObtained,
-          mastered: newMastered,
-          obtainedDates: newObtainedDates,
-          masteredDates: newMasteredDates,
+          [activeSeason]: {
+            ...current,
+            obtained: newObtained,
+            mastered: newMastered,
+            obtainedDates: newObtainedDates,
+            masteredDates: newMasteredDates,
+          },
         };
       } else {
-        // Unmastering sprite
-        const newMastered = (prev.mastered || []).filter((item) => item !== id);
-        const newMasteredDates = { ...prev.masteredDates };
+        const newMastered = (current.mastered || []).filter((item) => item !== id);
+        const newMasteredDates = { ...current.masteredDates };
         delete newMasteredDates[id];
 
         return {
           ...prev,
-          mastered: newMastered,
-          masteredDates: newMasteredDates,
+          [activeSeason]: {
+            ...current,
+            mastered: newMastered,
+            masteredDates: newMasteredDates,
+          },
         };
       }
     });
   };
 
   const handleToggleFavorite = (id: string) => {
-    const sprite = SPRITES.find((s) => s.id === id);
+    const sprite = currentSeasonSprites.find((s) => s.id === id);
     if (sprite?.unreleased) return;
 
-    setChecklist((prev) => {
-      const isFav = prev.favorites.includes(id);
+    setChecklists((prev) => {
+      const current = prev[activeSeason];
+      const isFav = current.favorites.includes(id);
       const newFavorites = isFav
-        ? prev.favorites.filter((item) => item !== id)
-        : [...prev.favorites, id];
+        ? current.favorites.filter((item) => item !== id)
+        : [...current.favorites, id];
 
       return {
         ...prev,
-        favorites: newFavorites,
+        [activeSeason]: {
+          ...current,
+          favorites: newFavorites,
+        },
       };
     });
   };
 
   const handleSaveNotes = (id: string, notesText: string) => {
-    setChecklist((prev) => {
-      const newNotes = { ...prev.notes };
+    setChecklists((prev) => {
+      const current = prev[activeSeason];
+      const newNotes = { ...current.notes };
       if (notesText.trim() === '') {
         delete newNotes[id];
       } else {
         newNotes[id] = notesText;
       }
-
       return {
         ...prev,
-        notes: newNotes,
+        [activeSeason]: {
+          ...current,
+          notes: newNotes,
+        },
       };
     });
   };
 
   const handleImportChecklist = (imported: ChecklistState) => {
-    setChecklist(imported);
+    setChecklists((prev) => ({
+      ...prev,
+      [activeSeason]: imported,
+    }));
+    setToastNotification({
+      title: 'Import Successful',
+      description: `Loaded backup progress for ${activeSeason.toUpperCase()} with ${imported.obtained.length} sprites obtained.`,
+    });
+    setTimeout(() => setToastNotification(null), 4000);
   };
 
   const handleResetProgress = () => {
-    setChecklist({
-      obtained: [],
-      mastered: [],
-      favorites: [],
-      notes: {},
-      obtainedDates: {},
-      masteredDates: {},
+    setChecklists((prev) => ({
+      ...prev,
+      [activeSeason]: {
+        obtained: [],
+        mastered: [],
+        favorites: [],
+        notes: {},
+        obtainedDates: {},
+        masteredDates: {},
+      },
+    }));
+    setToastNotification({
+      title: 'Reset Completed',
+      description: `All checklist progress for ${activeSeason.toUpperCase()} has been reset.`,
     });
-    localStorage.removeItem('sprite_obtained');
-    localStorage.removeItem('sprite_mastered');
-    localStorage.removeItem('sprite_favorites');
-    localStorage.removeItem('sprite_notes');
-    localStorage.removeItem('sprite_obtained_dates');
-    localStorage.removeItem('sprite_mastered_dates');
+    setTimeout(() => setToastNotification(null), 4000);
   };
 
-  // --- FILTERED & SORTED DATA ---
+  // --- FILTER & SORT LOGIC ---
   const filteredSprites = useMemo(() => {
-    let result = [...SPRITES];
+    let result = [...currentSeasonSprites];
 
-    // Filter by category selection
     if (activeCategory !== 'All') {
       result = result.filter((s) => s.category === activeCategory);
     }
 
-    // Filter by Advanced Filters in the filter bar
+    if (filters.category !== 'All') {
+      result = result.filter((s) => s.category === filters.category);
+    }
+
     if (filters.rarity !== 'All') {
       result = result.filter((s) => s.rarity === filters.rarity);
     }
@@ -500,7 +563,6 @@ export default function App() {
       result = result.filter((s) => s.variant === filters.variant);
     }
 
-    // Filter by search query
     if (filters.search.trim() !== '') {
       const query = filters.search.toLowerCase();
       result = result.filter(
@@ -512,14 +574,12 @@ export default function App() {
       );
     }
 
-    // Filter by Obtained status
     if (filters.obtainedState === 'obtained') {
-      result = result.filter((s) => checklist.obtained.includes(s.id));
+      result = result.filter((s) => activeChecklist.obtained.includes(s.id));
     } else if (filters.obtainedState === 'missing') {
-      result = result.filter((s) => !checklist.obtained.includes(s.id));
+      result = result.filter((s) => !activeChecklist.obtained.includes(s.id));
     }
 
-    // Sorting
     const rarityWeights: Record<string, number> = {
       Rare: 1,
       Epic: 2,
@@ -541,7 +601,6 @@ export default function App() {
     };
 
     result.sort((a, b) => {
-      // Prioritize putting unreleased ("Coming") versions at the bottom of the list
       if (a.unreleased && !b.unreleased) return 1;
       if (!a.unreleased && b.unreleased) return -1;
 
@@ -586,7 +645,7 @@ export default function App() {
     });
 
     return result;
-  }, [checklist.obtained, activeCategory, filters]);
+  }, [currentSeasonSprites, activeChecklist.obtained, activeCategory, filters]);
 
   return (
     <div className="min-h-screen bg-[#F6F4FE] dark:bg-[#0D0B18] dark:bg-gradient-to-tr dark:from-[#0D0B18] dark:via-[#18132B] dark:to-[#0D0B18] transition-colors duration-500 relative overflow-hidden pb-12 font-sans text-[#1E1A34] dark:text-[#F3E8FF]">
@@ -610,13 +669,19 @@ export default function App() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-5 relative z-10">
+        {/* Season Switcher Tabs (C7S4 vs C7S3) */}
+        <SeasonTabs
+          activeSeason={activeSeason}
+          onSelectSeason={setActiveSeason}
+          seasonCounts={seasonCounts}
+        />
 
-        {/* Dynamic Global Completion Bar */}
+        {/* Dynamic Global Completion Bar for Active Season */}
         <StatsDashboard
-          sprites={SPRITES}
-          obtainedIds={checklist.obtained}
-          masteredIds={checklist.mastered}
+          sprites={currentSeasonSprites}
+          obtainedIds={activeChecklist.obtained}
+          masteredIds={activeChecklist.mastered}
         />
 
         {/* Filter Toolbar */}
@@ -637,7 +702,7 @@ export default function App() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#A855F7] dark:bg-[#C084FC] animate-pulse" />
               <p className="text-xs text-[#1E1A34]/90 dark:text-[#E9D5FF]">
-                Displaying sprites from the <span className="font-bold text-[#A855F7] dark:text-[#C084FC]">{activeCategory}</span> category.
+                Displaying sprites from the <span className="font-bold text-[#A855F7] dark:text-[#C084FC]">{activeCategory}</span> category in <span className="font-bold">{activeSeason === 'c7s4' ? 'Chapter 7 Season 4' : 'Chapter 7 Season 3'}</span>.
               </p>
             </div>
             <button
@@ -652,15 +717,15 @@ export default function App() {
         {/* Sprite Grid or Matrix */}
         {filteredSprites.length > 0 ? (
           viewMode === 'grid' ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-fadeInScale">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-3.5 md:gap-4 animate-fadeInScale">
               {filteredSprites.map((sprite) => (
                 <SpriteCard
                   key={sprite.id}
                   sprite={sprite}
-                  isObtained={checklist.obtained.includes(sprite.id)}
-                  isMastered={(checklist.mastered || []).includes(sprite.id)}
-                  isFavorite={checklist.favorites.includes(sprite.id)}
-                  obtainedDate={checklist.obtainedDates[sprite.id]}
+                  isObtained={activeChecklist.obtained.includes(sprite.id)}
+                  isMastered={(activeChecklist.mastered || []).includes(sprite.id)}
+                  isFavorite={activeChecklist.favorites.includes(sprite.id)}
+                  obtainedDate={activeChecklist.obtainedDates[sprite.id]}
                   onToggleObtained={handleToggleObtained}
                   onToggleMastered={handleToggleMastered}
                   onToggleFavorite={handleToggleFavorite}
@@ -670,9 +735,9 @@ export default function App() {
           ) : (
             <SpriteMatrix
               sprites={filteredSprites}
-              obtainedIds={checklist.obtained}
-              masteredIds={checklist.mastered}
-              favoriteIds={checklist.favorites}
+              obtainedIds={activeChecklist.obtained}
+              masteredIds={activeChecklist.mastered}
+              favoriteIds={activeChecklist.favorites}
               onToggleObtained={handleToggleObtained}
               onToggleMastered={handleToggleMastered}
               onToggleFavorite={handleToggleFavorite}
@@ -704,7 +769,7 @@ export default function App() {
                   sortBy: 'number-asc',
                 });
               }}
-              className="py-2.5 px-4 bg-[#F5B335] hover:bg-[#FFC95A] dark:hover:bg-[#FFD977] text-white dark:text-[#1A130D] font-bold text-xs rounded-xl shadow-md transition-colors cursor-pointer"
+              className="py-2.5 px-4 bg-[#A855F7] hover:bg-[#9333EA] text-white font-bold text-xs rounded-xl shadow-md transition-colors cursor-pointer"
             >
               Clear All Filters
             </button>
@@ -714,9 +779,9 @@ export default function App() {
 
       {/* Footer */}
       <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-8 text-center relative z-10">
-        <div className="pt-6 border-t border-[#F1E4C6]/60 dark:border-[#4A3B2A]/40">
-          <p className="text-xs font-mono tracking-widest text-[#221A12]/40 dark:text-[#F7F0E3]/30 uppercase">
-            AP© | July 2026
+        <div className="pt-6 border-t border-[#E9D5FF]/60 dark:border-[#2A2147]/40">
+          <p className="text-xs font-mono tracking-widest text-[#5B21B6]/40 dark:text-[#C084FC]/30 uppercase">
+            AP© | Chapter 7 Season 4 Edition
           </p>
         </div>
       </footer>
@@ -728,24 +793,24 @@ export default function App() {
         sprite={selectedSprite}
         isOpen={selectedSprite !== null}
         onClose={() => setSelectedSprite(null)}
-        isObtained={selectedSprite ? checklist.obtained.includes(selectedSprite.id) : false}
-        isMastered={selectedSprite ? (checklist.mastered || []).includes(selectedSprite.id) : false}
-        isFavorite={selectedSprite ? checklist.favorites.includes(selectedSprite.id) : false}
+        isObtained={selectedSprite ? activeChecklist.obtained.includes(selectedSprite.id) : false}
+        isMastered={selectedSprite ? (activeChecklist.mastered || []).includes(selectedSprite.id) : false}
+        isFavorite={selectedSprite ? activeChecklist.favorites.includes(selectedSprite.id) : false}
         onToggleObtained={handleToggleObtained}
         onToggleMastered={handleToggleMastered}
         onToggleFavorite={handleToggleFavorite}
-        obtainedDate={selectedSprite ? checklist.obtainedDates[selectedSprite.id] : undefined}
-        notes={selectedSprite ? checklist.notes[selectedSprite.id] : ''}
+        obtainedDate={selectedSprite ? activeChecklist.obtainedDates[selectedSprite.id] : undefined}
+        notes={selectedSprite ? activeChecklist.notes[selectedSprite.id] : ''}
         onSaveNotes={handleSaveNotes}
       />
 
       {/* Hidden pipeline for off-screen sprite rendering during high-res canvas exports */}
-      <div 
-        id="hidden-export-container" 
-        className="absolute pointer-events-none opacity-0 invisible overflow-hidden" 
+      <div
+        id="hidden-export-container"
+        className="absolute pointer-events-none opacity-0 invisible overflow-hidden"
         style={{ left: -9999, top: -9999, width: 1, height: 1 }}
       >
-        {SPRITES.filter((s) => checklist.obtained.includes(s.id)).map((sprite) => (
+        {currentSeasonSprites.filter((s) => activeChecklist.obtained.includes(s.id)).map((sprite) => (
           <div key={sprite.id} id={`export-sprite-${sprite.id}`}>
             <ProceduralSprite features={sprite.features} obtained={true} size="md" />
           </div>
@@ -756,18 +821,20 @@ export default function App() {
       <SettingsPanel
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        state={checklist}
+        state={activeChecklist}
         onImportState={handleImportChecklist}
         onResetAll={handleResetProgress}
       />
 
       {/* --- SYSTEM NOTIFICATION TOAST --- */}
       {toastNotification && (
-        <div className={`fixed bottom-6 right-6 z-50 p-4 rounded-2xl text-white shadow-2xl flex items-center gap-4 animate-[fadeInScale_0.3s_cubic-bezier(0.175,0.885,0.32,1.275)] border max-w-sm ${
-          toastNotification.title.includes('Failed') || toastNotification.title.includes('Error')
-            ? 'bg-linear-to-r from-red-500 to-rose-600 border-rose-400/30'
-            : 'bg-linear-to-r from-[#5C4017] to-[#F5B335] border-[#F5B335]/30'
-        }`}>
+        <div
+          className={`fixed bottom-6 right-6 z-50 p-4 rounded-2xl text-white shadow-2xl flex items-center gap-4 animate-[fadeInScale_0.3s_cubic-bezier(0.175,0.885,0.32,1.275)] border max-w-sm ${
+            toastNotification.title.includes('Failed') || toastNotification.title.includes('Error')
+              ? 'bg-linear-to-r from-red-500 to-rose-600 border-rose-400/30'
+              : 'bg-linear-to-r from-[#7E22CE] to-[#A855F7] border-[#C084FC]/30'
+          }`}
+        >
           <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-xl">
             {toastNotification.title.includes('Failed') || toastNotification.title.includes('Error') ? (
               <Icons.AlertCircle className="w-5 h-5 text-white" />
@@ -786,7 +853,7 @@ export default function App() {
           </div>
           <button
             onClick={() => setToastNotification(null)}
-            className="text-white/60 hover:text-white transition-colors p-1 ml-auto"
+            className="text-white/60 hover:text-white transition-colors p-1 ml-auto cursor-pointer"
           >
             <Icons.X className="w-4 h-4" />
           </button>

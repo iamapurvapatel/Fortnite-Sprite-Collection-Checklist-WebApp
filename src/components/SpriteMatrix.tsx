@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sprite } from '../types';
 import { ProceduralSprite } from './ProceduralSprite';
-import { CUSTOM_FAMILY_ORDER } from '../data/sprites';
+import { CUSTOM_FAMILY_ORDER, VARIANT_ORDER } from '../data/sprites';
 import * as Icons from 'lucide-react';
 
 interface SpriteMatrixProps {
@@ -38,6 +38,26 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
     return a.localeCompare(b);
   });
 
+  // Calculate distinct variants dynamically from the current dataset
+  const distinctVariants = VARIANT_ORDER.filter((v) =>
+    sprites.some((s) => s.variant === v)
+  );
+
+  const numVariants = distinctVariants.length || 7;
+  const isFewVariants = numVariants <= 4;
+  const labelColsClass = isFewVariants ? 'col-span-3 sm:col-span-2 md:col-span-2' : 'col-span-3 sm:col-span-2';
+  const slotColsClass = isFewVariants ? 'col-span-9 sm:col-span-10 md:col-span-10' : 'col-span-9 sm:col-span-10';
+  const gridColsClass =
+    numVariants === 3
+      ? 'sm:grid-cols-3 max-w-[460px] md:max-w-[540px]'
+      : numVariants === 4
+      ? 'sm:grid-cols-4 max-w-[600px] md:max-w-[680px]'
+      : numVariants === 5
+      ? 'sm:grid-cols-5'
+      : numVariants === 6
+      ? 'sm:grid-cols-6'
+      : 'sm:grid-cols-7';
+
   return (
     <div className="w-full space-y-4 animate-fadeInScale">
       {/* Helper Legend Banner for Matrix Mode Interactions */}
@@ -59,50 +79,39 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
 
       {/* Non-scrolling container wrapper so only individual row variants scroll on mobile */}
       <div className="w-full space-y-4">
-        {/* Visual Sketch Matching Header Section - Hidden on mobile because each card has its own name inside */}
+        {/* Visual Header Section - Hidden on mobile because each card has its own variant name inside */}
         <div className="text-left py-2 hidden sm:block">
           <h2 id="variants-header" className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B5E48] dark:text-zinc-500 font-extrabold mb-3">
             Variants
           </h2>
           
-          {/* Double Border Framing with Honey Glow Colors */}
+          {/* Double Border Framing */}
           <div className="border-t border-b border-[#F1E4C6]/20 dark:border-zinc-800/20 py-3 opacity-90">
             <div className="grid grid-cols-12 gap-2 items-center text-center">
               {/* Row Label Spacer */}
-              <div className="col-span-3 sm:col-span-2 text-left">
+              <div className={`${labelColsClass} text-left`}>
                 <span className="font-mono text-[10px] tracking-widest text-[#A38F72] dark:text-zinc-500 uppercase font-extrabold">
                   Sprite Family
                 </span>
               </div>
               
-              {/* The 7 Variant Columns */}
-              <div className="col-span-9 sm:col-span-10 grid grid-cols-7 gap-2 sm:gap-3 md:gap-4 font-mono text-xs tracking-wider font-extrabold text-[#221A12] dark:text-zinc-300 uppercase text-center">
-                <div>Basic</div>
-                <div>Gold</div>
-                <div>Gummy</div>
-                <div>Galaxy</div>
-                <div>Holofoil</div>
-                <div>Gem</div>
-                <div>Cube</div>
+              {/* Dynamic Variant Columns */}
+              <div className={`${slotColsClass}`}>
+                <div className={`grid ${gridColsClass} gap-2 sm:gap-3 md:gap-3.5 font-mono text-xs tracking-wider font-extrabold text-[#221A12] dark:text-zinc-300 uppercase text-center`}>
+                  {distinctVariants.map((v) => (
+                    <div key={v}>{v}</div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Rows of Sprite Families */}
-        <div className="space-y-3 sm:space-y-2.5">
+        <div className="space-y-2.5 sm:space-y-2">
           {sortedFamilies.map((familyName) => {
             // Get all sprites belonging to this family
             const familySprites = sprites.filter((s) => s.name === familyName);
-            
-            // Separate into variant slots
-            const basicSprite = familySprites.find((s) => s.variant === 'Basic');
-            const goldSprite = familySprites.find((s) => s.variant === 'Gold');
-            const gummySprite = familySprites.find((s) => s.variant === 'Gummy');
-            const galaxySprite = familySprites.find((s) => s.variant === 'Galaxy');
-            const holofoilSprite = familySprites.find((s) => s.variant === 'Holofoil');
-            const gemSprite = familySprites.find((s) => s.variant === 'Gem');
-            const cubeSprite = familySprites.find((s) => s.variant === 'Cube');
 
             // Calculate obtained progress for this family
             const totalFamilySprites = familySprites.length;
@@ -112,10 +121,10 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
             return (
               <div
                 key={familyName}
-                className="flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-2 items-stretch sm:items-center p-3 sm:p-3 rounded-2xl border border-transparent dark:border-transparent bg-white/[0.45] dark:bg-white/[0.005] hover:bg-[#FFF6E6]/60 dark:hover:bg-zinc-900/15 shadow-[0_4px_16px_-4px_rgba(180,120,20,0.03)] dark:shadow-none transition-all duration-300"
+                className="flex flex-col sm:grid sm:grid-cols-12 gap-2.5 sm:gap-2 items-stretch sm:items-center p-2.5 sm:p-2.5 rounded-2xl border border-transparent dark:border-transparent bg-white/[0.45] dark:bg-white/[0.005] hover:bg-[#FFF6E6]/60 dark:hover:bg-zinc-900/15 shadow-[0_4px_16px_-4px_rgba(180,120,20,0.03)] dark:shadow-none transition-all duration-300"
               >
-                {/* Left Column: Family Name & Progress Badge (Pinned / Left-Aligned) */}
-                <div className="col-span-3 sm:col-span-2 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-center text-left pb-2 sm:pb-0 border-b border-transparent sm:border-b-0">
+                {/* Left Column: Family Name & Progress Badge */}
+                <div className={`${labelColsClass} flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-center text-left pb-1.5 sm:pb-0 border-b border-transparent sm:border-b-0`}>
                   <span className="font-sans font-black text-sm sm:text-base text-[#221A12] dark:text-zinc-200 tracking-tight flex items-center gap-1.5 truncate">
                     {familyName}
                     {isFamilyComplete && (
@@ -127,91 +136,24 @@ export const SpriteMatrix: React.FC<SpriteMatrixProps> = ({
                   </span>
                 </div>
 
-                {/* Right Columns: Interactive Slot Grid - Horizontally Scrollable on Mobile, Grid on Desktop */}
-                <div className="col-span-9 sm:col-span-10 flex sm:grid sm:grid-cols-7 gap-2.5 sm:gap-3.5 md:gap-4 items-center overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 scrollbar-none sm:scrollbar-default -mx-3 px-3 sm:mx-0 sm:px-0">
-                  {/* 1. Basic Slot */}
-                  <VariantSlot
-                    sprite={basicSprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
-
-                  {/* 2. Gold Slot */}
-                  <VariantSlot
-                    sprite={goldSprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
-
-                  {/* 3. Gummy Slot */}
-                  <VariantSlot
-                    sprite={gummySprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
-
-                  {/* 4. Galaxy Slot */}
-                  <VariantSlot
-                    sprite={galaxySprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
-
-                  {/* 5. Holofoil Slot */}
-                  <VariantSlot
-                    sprite={holofoilSprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
-
-                  {/* 6. Gem Slot */}
-                  <VariantSlot
-                    sprite={gemSprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
-
-                  {/* 7. Cube Slot */}
-                  <VariantSlot
-                    sprite={cubeSprite}
-                    obtainedIds={obtainedIds}
-                    masteredIds={masteredIds}
-                    favoriteIds={favoriteIds}
-                    onToggleObtained={onToggleObtained}
-                    onToggleMastered={onToggleMastered}
-                    onToggleFavorite={onToggleFavorite}
-                    onOpenDetail={onOpenDetail}
-                  />
+                {/* Right Columns: Interactive Dynamic Slot Grid */}
+                <div className={`${slotColsClass} flex sm:grid ${gridColsClass} gap-2 sm:gap-2.5 md:gap-3 items-center overflow-x-auto sm:overflow-visible pb-1.5 sm:pb-0 scrollbar-none sm:scrollbar-default -mx-2 px-2 sm:mx-0 sm:px-0`}>
+                  {distinctVariants.map((v) => {
+                    const variantSprite = familySprites.find((s) => s.variant === v);
+                    return (
+                      <VariantSlot
+                        key={v}
+                        sprite={variantSprite}
+                        obtainedIds={obtainedIds}
+                        masteredIds={masteredIds}
+                        favoriteIds={favoriteIds}
+                        onToggleObtained={onToggleObtained}
+                        onToggleMastered={onToggleMastered}
+                        onToggleFavorite={onToggleFavorite}
+                        onOpenDetail={onOpenDetail}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -322,9 +264,7 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
       onTouchEnd={isComingSoon ? undefined : handleTouchEnd}
       onTouchMove={isComingSoon ? undefined : handleTouchMove}
       onClick={handleSlotClick}
-      className={`group relative aspect-square rounded-xl sm:rounded-2xl border border-transparent transition-all duration-300 flex flex-col items-center justify-center overflow-hidden cursor-pointer select-none w-[160px] sm:w-full flex-shrink-0 ${
-        compact ? 'p-1.5 sm:p-2' : 'p-2.5 sm:p-3'
-      } ${
+      className={`group relative min-h-[118px] sm:min-h-[136px] md:min-h-[148px] rounded-xl sm:rounded-2xl border border-transparent transition-all duration-300 flex flex-col items-center justify-between overflow-hidden cursor-pointer select-none w-[108px] sm:w-full max-w-[160px] flex-shrink-0 p-2 sm:p-2.5 ${
         isComingSoon
           ? 'bg-[#FFE4B5]/3 dark:bg-zinc-900/10 opacity-35 cursor-not-allowed'
           : isMastered
@@ -344,9 +284,9 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
     >
       {/* Obtained status dot / Sparkle (Top-Left) */}
       {!compact && (
-        <span className="absolute top-1.5 left-2 opacity-75 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+        <span className="absolute top-1.5 left-1.5 opacity-75 group-hover:opacity-100 transition-opacity flex items-center gap-0.5 z-20">
           {isMastered ? (
-            <Icons.Sparkle className="w-3 h-3 text-amber-500 fill-amber-500 animate-pulse shrink-0" />
+            <Icons.Sparkle className="w-2.5 h-2.5 text-amber-500 fill-amber-500 animate-pulse shrink-0" />
           ) : isObtained && !isComingSoon && (
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
           )}
@@ -358,43 +298,48 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
         <Icons.Lock className="w-4 h-4 text-[#F59E0B]/50 dark:text-rose-400/60 animate-pulse" />
       )}
 
-      {/* Central Sprite Art */}
+      {/* Central Sprite Art - Maximized relative to container */}
       {!isComingSoon && (
         <div
-          className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-110 pb-1 ${
-            compact ? 'w-12 h-12 sm:w-14 sm:h-14' : 'w-36 h-36 aspect-square'
-          } ${
+          className={`w-full flex-1 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 pt-1 pb-2 px-1 ${
             !isObtained ? 'opacity-30 filter grayscale-[15%] dark:opacity-25' : ''
           }`}
         >
-          <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size={compact ? "sm" : "md"} />
+          <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size="full" />
         </div>
       )}
 
-      {/* Variant Name at bottom-left */}
-      <span className="absolute bottom-2 left-2 text-[8.5px] sm:text-[10px] font-mono font-black text-[#A38F72] dark:text-zinc-500 uppercase tracking-tighter truncate max-w-[55%] opacity-80 group-hover:opacity-100 transition-opacity">
-        {variant}
-      </span>
-
-      {/* Bottom-right Mastered Quick Action Button */}
+      {/* Bottom Mastered Checkbox Bar */}
       {!isComingSoon && (
-        <div className={`absolute bottom-1.5 right-1.5 z-30 transition-opacity ${
-          isMastered ? 'opacity-100' : isObtained ? 'opacity-80 group-hover:opacity-100' : 'opacity-0 group-hover:opacity-100'
-        }`}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onToggleMastered) onToggleMastered(id);
-            }}
-            className={`flex items-center justify-center w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-lg border shadow-xs transition-all cursor-pointer ${
-              isMastered
-                ? 'bg-amber-500 text-white border-amber-400 shadow-amber-500/30 scale-105'
-                : 'bg-white/95 dark:bg-zinc-800/95 border-zinc-200/80 dark:border-zinc-700 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-zinc-400 hover:text-amber-500'
-            }`}
-            title={isMastered ? "Mastered! Click to unmark" : "Mark as Mastered"}
-          >
-            <Icons.Sparkles className={`w-4 h-4 ${isMastered ? 'fill-white text-white animate-pulse' : ''}`} />
-          </button>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!isObtained) {
+              onToggleObtained(id);
+            } else if (onToggleMastered) {
+              onToggleMastered(id);
+            }
+          }}
+          className={`w-full z-30 flex items-center justify-between px-2 py-1 rounded-md border text-[8px] sm:text-[9px] font-mono font-black uppercase transition-all duration-200 cursor-pointer select-none ${
+            isMastered
+              ? 'bg-amber-500/90 text-white border-amber-400 shadow-[0_2px_8px_rgba(245,158,11,0.35)] scale-[1.02]'
+              : isObtained
+              ? 'bg-white/90 dark:bg-zinc-800/90 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-amber-400 hover:text-amber-500'
+              : 'bg-white/70 dark:bg-zinc-900/60 border-zinc-200/50 dark:border-zinc-800/50 text-zinc-400 dark:text-zinc-500 opacity-60 hover:opacity-100 hover:text-zinc-700 dark:hover:text-zinc-300'
+          }`}
+          title={isMastered ? "Mastered! Click to unmark" : isObtained ? "Click to mark Mastered" : "Click to mark as Collected & Mastered"}
+        >
+          <span className="flex items-center gap-1 tracking-tight truncate">
+            <Icons.Sparkles className={`w-3 h-3 shrink-0 ${isMastered ? 'fill-white text-white animate-pulse' : 'text-zinc-400'}`} />
+            <span className="truncate">Mastered</span>
+          </span>
+          <span className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded flex items-center justify-center border shrink-0 transition-all ${
+            isMastered
+              ? 'bg-white text-amber-600 border-white'
+              : 'border-zinc-400/60 dark:border-zinc-600 bg-white/40 dark:bg-zinc-900/40'
+          }`}>
+            {isMastered && <Icons.Check className="w-2.5 h-2.5 stroke-[3.5]" />}
+          </span>
         </div>
       )}
     </div>
@@ -404,7 +349,7 @@ const VariantSlot: React.FC<VariantSlotProps> = ({
 // Clean Placeholder for Non-existent slots
 const EmptySlot: React.FC = () => {
   return (
-    <div className="w-[160px] sm:w-full flex-shrink-0 aspect-square rounded-xl sm:rounded-2xl border border-transparent bg-[#FFE4B5]/2 dark:bg-white/[0.005] flex items-center justify-center opacity-25 pointer-events-none select-none">
+    <div className="w-[108px] sm:w-full max-w-[160px] min-h-[118px] sm:min-h-[136px] md:min-h-[148px] flex-shrink-0 rounded-xl sm:rounded-2xl border border-transparent bg-[#FFE4B5]/2 dark:bg-white/[0.005] flex items-center justify-center opacity-25 pointer-events-none select-none">
       <span className="text-[10px] font-mono font-bold text-[#A38F72] dark:text-zinc-600">-</span>
     </div>
   );

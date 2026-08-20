@@ -5,7 +5,7 @@ interface ProceduralSpriteProps {
   features: SpriteFeatures;
   obtained?: boolean;
   mastered?: boolean;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 const AuraOverlay: React.FC = () => {
@@ -36,13 +36,20 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
     imageUrl,
   } = features;
 
+  const [imgError, setImgError] = React.useState(false);
+
+  React.useEffect(() => {
+    setImgError(false);
+  }, [imageUrl]);
+
   // Determine size in pixels
   const dimensions = {
     xs: { container: 'w-10 h-10', svg: 40 },
     sm: { container: 'w-16 h-16', svg: 64 },
     md: { container: 'w-24 h-24', svg: 96 },
-    lg: { container: 'w-36 h-36', svg: 144 },
+    lg: { container: 'w-32 h-32 sm:w-36 sm:h-36', svg: 144 },
     xl: { container: 'w-48 h-48', svg: 192 },
+    full: { container: 'w-full h-full max-w-full max-h-full', svg: 120 },
   }[size] || { container: 'w-24 h-24', svg: 96 };
 
   // CSS Filters for Glow & Unobtained state
@@ -58,7 +65,7 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   } as React.CSSProperties;
 
-  if (imageUrl) {
+  if (imageUrl && !imgError) {
     return (
       <div
         className={`relative flex items-center justify-center select-none ${dimensions.container}`}
@@ -89,6 +96,7 @@ export const ProceduralSprite: React.FC<ProceduralSpriteProps> = ({
           src={imageUrl}
           alt="Sprite"
           referrerPolicy="no-referrer"
+          onError={() => setImgError(true)}
           className="w-full h-full object-contain relative z-10 transition-transform duration-500 hover:scale-105 procedural-sprite-visual"
           style={filterStyle}
         />

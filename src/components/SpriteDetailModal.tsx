@@ -71,6 +71,10 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
       perk = "Gain 3x bonus XP from eliminations";
       dropChance = "0.7%";
       variantLabel = "Gold";
+    } else if (variant === 'CheatMaster') {
+      perk = "Overclocks game parameters and reveals hidden secrets";
+      dropChance = "0.1%";
+      variantLabel = "CheatMaster";
     } else if (variant === 'Gummy') {
       perk = "Gain 20% more Sprite Dust upon Extraction";
       dropChance = "0.28%";
@@ -95,7 +99,55 @@ export const SpriteDetailModal: React.FC<SpriteDetailModalProps> = ({
     }
 
     // Check specific family mappings
-    if (fam === 'Water') {
+    if (fam === 'Sonic') {
+      desc = "Spin at supersonic speed and collect golden rings!";
+      powerScaling = "Increases movement speed bonus: +15% -> +20% -> +25% -> +30% -> +35%";
+      location = "Spotted running across Green Hill slopes and coastal loops";
+    } else if (fam === 'Shadow') {
+      desc = "Harness Chaos Control to teleport across short distances!";
+      powerScaling = "Chaos pulse damage: 25 -> 35 -> 45 -> 55 -> 65";
+      location = "Spotted lingering in space colonies and twilight shadows";
+    } else if (fam === 'Tails') {
+      desc = "Hover through the air with twin rotating tails!";
+      powerScaling = "Flight duration: 3s -> 4.5s -> 6s -> 7.5s -> 9s";
+      location = "Spotted tinkering in mechanical workshops and runway zones";
+    } else if (fam === 'Klombo') {
+      desc = "A friendly behemoth that sneezes out high-tier weapons and items!";
+      powerScaling = "Bonus loot rarity boost: +10% -> +15% -> +20% -> +25% -> +30%";
+      location = "Spotted roaming tranquil meadows and Klomberry bushes";
+    } else if (fam === 'Jonesy') {
+      desc = "Battle-tested squad leader with enhanced tactical instincts!";
+      powerScaling = "Reload and weapon swap speed: +10% -> +15% -> +20% -> +25% -> +30%";
+      location = "Spotted in hot-drop battle royale landing points";
+    } else if (fam === 'Killswitch') {
+      desc = "Deploy system-overriding combat bursts to incapacitate foes!";
+      powerScaling = "EMP blast radius: 5m -> 7m -> 9m -> 11m -> 13m";
+      location = "Found near high-tech bases and radar installations";
+    } else if (fam === '8-Bit') {
+      desc = "Pulsing with retro pixel arcade magic and vintage chiptunes!";
+      powerScaling = "Arcade score multiplier: 1.2x -> 1.4x -> 1.6x -> 1.8x -> 2.0x";
+      location = "Found near vintage gaming machines and digital shrines";
+    } else if (fam === 'Crown') {
+      desc = "Radiate royal authority and generate bonus Victory crowns!";
+      powerScaling = "XP bonus while holding victory status: +20% -> +30% -> +40% -> +50% -> +60%";
+      location = "Spawned atop podiums and champion pedestals";
+    } else if (fam === 'Jackrabbit') {
+      desc = "Perform rapid hyper-speed leaps over obstacles and cliffs!";
+      powerScaling = "Jump height bonus: +20% -> +30% -> +40% -> +50% -> +60%";
+      location = "Spotted hopping along open plains and arid deserts";
+    } else if (fam === 'BushMaster') {
+      desc = "Natural foliage stealth providing complete camouflage when stationary!";
+      powerScaling = "Stealth shield generation: 2 -> 3 -> 4 -> 5 -> 6 shield per sec";
+      location = "Concealed inside dense shrubbery and forest canopies";
+    } else if (fam === 'Storm Scout') {
+      desc = "Pinpoint upcoming storm eye safe circles ahead of time!";
+      powerScaling = "Storm prediction preview advance time: 30s -> 45s -> 60s -> 75s -> 90s";
+      location = "Spotted at high-altitude mountain lookouts";
+    } else if (fam === 'Adventure') {
+      desc = "Explore lost ruins, uncover hidden relics, and disarm ancient traps!";
+      powerScaling = "Hidden chest detection range: 10m -> 15m -> 20m -> 25m -> 30m";
+      location = "Found deep within ancient temples and forgotten caverns";
+    } else if (fam === 'Water') {
       desc = "Replenish shields while standing in water!";
       powerScaling = "Increases in power at each Level Up: 2 Shield -> 3 Shield -> 4 Shield -> 5 Shield -> 6 Shield per tick";
       location = "Spotted near rivers and beaches";

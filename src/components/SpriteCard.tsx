@@ -32,6 +32,7 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
   const variantColors: Record<string, { bg: string; text: string; icon: string }> = {
     Basic: { bg: 'bg-[#94A3B8]/10 border-[#94A3B8]/20', text: 'text-[#94A3B8] dark:text-[#94A3B8]', icon: 'Sparkles' },
     Gold: { bg: 'bg-[#F5B335]/10 border-[#F5B335]/20', text: 'text-[#F5B335] dark:text-[#F5B335]', icon: 'Crown' },
+    CheatMaster: { bg: 'bg-[#F43F5E]/10 border-[#F43F5E]/20', text: 'text-[#F43F5E] dark:text-[#FB7185]', icon: 'Zap' },
     Gummy: { bg: 'bg-[#F97316]/10 border-[#F97316]/20', text: 'text-[#F97316] dark:text-[#F97316]', icon: 'Candy' },
     Galaxy: { bg: 'bg-[#8B5CF6]/10 border-[#8B5CF6]/20', text: 'text-[#8B5CF6] dark:text-[#8B5CF6]', icon: 'Orbit' },
     Holofoil: { bg: 'bg-[#EC4899]/10 border-[#EC4899]/20', text: 'text-[#EC4899] dark:text-[#EC4899]', icon: 'Layers' },
@@ -132,7 +133,7 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
       onTouchEnd={isUnreleased ? undefined : handleTouchEnd}
       onTouchMove={isUnreleased ? undefined : handleTouchMove}
       onClick={handleCardClick}
-      className={`glass-card rounded-[20px] border border-transparent transition-all duration-300 relative group overflow-hidden flex flex-col justify-between select-none ${
+      className={`glass-card rounded-2xl border border-transparent transition-all duration-300 relative group overflow-hidden flex flex-col justify-between select-none ${
         isUnreleased
           ? 'bg-[#F6F4FE]/40 dark:bg-[#18132B]/40 opacity-50 cursor-not-allowed'
           : isMastered
@@ -158,9 +159,9 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
       )}
 
       {/* Top action row with Collect (top-left) & Master (top-right) Icon Buttons */}
-      <div className="p-2.5 flex items-center justify-between relative z-20">
+      <div className="p-2 flex items-center justify-between relative z-20">
         {isUnreleased ? (
-          <span className="inline-flex items-center gap-1 text-[9px] font-black tracking-wider text-rose-500 dark:text-rose-400 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-1 rounded-md">
+          <span className="inline-flex items-center gap-1 text-[9px] font-black tracking-wider text-rose-500 dark:text-rose-400 bg-rose-500/10 dark:bg-rose-500/20 px-2 py-0.5 rounded-md">
             <Icons.Lock className="w-3 h-3" /> COMING SOON
           </span>
         ) : (
@@ -171,14 +172,14 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
                 e.stopPropagation();
                 onToggleObtained(id);
               }}
-              className={`w-9 h-9 rounded-xl transition-all duration-200 cursor-pointer border select-none flex items-center justify-center ${
+              className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-lg transition-all duration-200 cursor-pointer border select-none flex items-center justify-center ${
                 isObtained
                   ? 'bg-emerald-500/20 dark:bg-emerald-500/30 text-emerald-600 dark:text-emerald-300 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
                   : 'bg-white/90 dark:bg-[#18132B]/90 text-slate-400 dark:text-zinc-400 border-[#E9D5FF] dark:border-[#2A2147] hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30'
               }`}
               title={isObtained ? "Collected (Click to unmark)" : "Click to mark as Collected"}
             >
-              <Icons.Check className={`w-5 h-5 ${isObtained ? 'stroke-[3] text-emerald-600 dark:text-emerald-300' : 'stroke-[2.5]'}`} />
+              <Icons.Check className={`w-4 h-4 ${isObtained ? 'stroke-[3] text-emerald-600 dark:text-emerald-300' : 'stroke-[2.5]'}`} />
             </button>
 
             {/* Top-Right: Master Star Button */}
@@ -188,7 +189,7 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
                 e.stopPropagation();
                 if (onToggleMastered && isObtained) onToggleMastered(id);
               }}
-              className={`w-9 h-9 rounded-xl transition-all duration-200 border select-none flex items-center justify-center ${
+              className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-lg transition-all duration-200 border select-none flex items-center justify-center ${
                 !isObtained
                   ? 'opacity-30 cursor-not-allowed bg-gray-100/40 dark:bg-zinc-900/40 text-gray-400 border-transparent'
                   : isMastered
@@ -197,7 +198,7 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
               }`}
               title={!isObtained ? "Collect sprite first to master" : isMastered ? "Mastered (Click to unmark)" : "Click to mark as Mastered"}
             >
-              <Icons.Star className={`w-5 h-5 ${isMastered ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : 'stroke-[2]'}`} />
+              <Icons.Star className={`w-4 h-4 ${isMastered ? 'fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400' : 'stroke-[2]'}`} />
             </button>
           </div>
         )}
@@ -211,22 +212,53 @@ export const SpriteCard: React.FC<SpriteCardProps> = ({
             onOpenDetail(sprite);
           }
         }}
-        className={`flex flex-col items-center justify-center py-2.5 relative z-10 select-none group-hover:scale-105 transition-transform duration-300 ${onOpenDetail ? 'cursor-pointer' : ''} ${isUnreleased ? 'filter blur-[3px] opacity-40 grayscale group-hover:blur-none group-hover:opacity-100 group-hover:grayscale-0' : ''}`}
+        className={`flex flex-col items-center justify-center py-1 sm:py-2 relative z-10 select-none group-hover:scale-105 transition-transform duration-300 ${onOpenDetail ? 'cursor-pointer' : ''} ${isUnreleased ? 'filter blur-[3px] opacity-40 grayscale group-hover:blur-none group-hover:opacity-100 group-hover:grayscale-0' : ''}`}
         title={onOpenDetail ? "Click sprite to view details" : undefined}
       >
-        <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size="md" />
+        <div className="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
+          <ProceduralSprite features={features} obtained={isObtained} mastered={isMastered} size="full" />
+        </div>
       </div>
 
       {/* Footer Details */}
-      <div className="p-3 border-t border-[#E9D5FF]/60 dark:border-[#2A2147] bg-[#FAF5FF]/50 dark:bg-[#18132B]/60 flex flex-col gap-1.5 relative z-10 flex-1 justify-end">
+      <div className="p-2.5 sm:p-3 border-t border-[#E9D5FF]/60 dark:border-[#2A2147] bg-[#FAF5FF]/50 dark:bg-[#18132B]/60 flex flex-col gap-1.5 relative z-10 flex-1 justify-end">
         <div>
           <h4 className={`text-xs font-black text-[#1E1A34] dark:text-[#F3E8FF] transition-colors truncate ${!isUnreleased ? 'group-hover:text-[#A855F7] dark:group-hover:text-[#C084FC]' : ''}`}>
             {name}
           </h4>
-          <span className="text-[9px] text-[#5B21B6] dark:text-[#A78BFA] font-extrabold tracking-tight uppercase">
-            {category} Collection
-          </span>
         </div>
+
+        {/* Mastered interactive checkbox row */}
+        {!isUnreleased && (
+          <button
+            type="button"
+            disabled={!isObtained}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onToggleMastered && isObtained) onToggleMastered(id);
+            }}
+            className={`w-full flex items-center justify-between px-2 py-1 rounded-md border text-[9.5px] font-mono font-black uppercase transition-all duration-200 cursor-pointer select-none ${
+              !isObtained
+                ? 'opacity-40 bg-zinc-100/60 dark:bg-zinc-900/40 text-zinc-400 border-zinc-200/50 dark:border-zinc-800/50 cursor-not-allowed'
+                : isMastered
+                ? 'bg-amber-500/15 dark:bg-amber-500/25 border-amber-500/50 text-amber-600 dark:text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                : 'bg-white/80 dark:bg-zinc-800/70 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-amber-400 hover:text-amber-500'
+            }`}
+            title={!isObtained ? "Collect sprite first to master" : isMastered ? "Mastered (Click to unmark)" : "Click to mark as Mastered"}
+          >
+            <span className="flex items-center gap-1 tracking-wider">
+              <Icons.Sparkles className={`w-3 h-3 ${isMastered ? 'fill-amber-500 text-amber-500 animate-pulse' : 'text-zinc-400'}`} />
+              Mastered
+            </span>
+            <span className={`w-3.5 h-3.5 rounded flex items-center justify-center border transition-all ${
+              isMastered
+                ? 'bg-amber-500 border-amber-500 text-white'
+                : 'border-zinc-300 dark:border-zinc-600 bg-white/50 dark:bg-zinc-900/50'
+            }`}>
+              {isMastered && <Icons.Check className="w-2.5 h-2.5 stroke-[3.5]" />}
+            </span>
+          </button>
+        )}
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1 pt-0.5">
