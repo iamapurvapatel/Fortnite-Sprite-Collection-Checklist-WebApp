@@ -16,7 +16,8 @@
 *   **📊 Live Stats & Progress Dashboard** — Track obtained and mastered percentages, family completion statuses, and collection milestones in real time.
 *   **💾 Instant Auto-Save** — Fast client-side persistence for your obtained, mastered, favorite, and custom note records.
 *   **🔍 Search, Multi-Filter & Custom Notes** — Filter by family, rarity, season, obtained/missing status, or search by name. Add personal notes and timestamps to any sprite.
-*   **🖼️ Poster Exporter** — Export your custom collection showcase into a clean, shareable image.
+*   **🖼️ Poster Exporter & Floating Quick Action** — Export your custom collection showcase into a clean, shareable 1080x1080 image anytime via the header or the new floating action button (FAB).
+*   **🔑 Secret Cheat Codes & Rewards Vault** — Built-in interactive vault for all 19 in-game redeem codes (Sprite unlocks, 40k XP, 2,000 Sprite Dust, Llama supply drops, Tetris block transforms) with 1-click clipboard copying and redemption tracking!
 
 ---
 
@@ -36,15 +37,18 @@
 ```bash
 ├── 📁 src
 │   ├── 📁 components
+│   │   ├── 🧩 FloatingActions.tsx     # Floating action buttons (Export Poster & Codes Vault)
+│   │   ├── 🧩 CodesModal.tsx          # Secret in-game redeem codes & rewards vault
 │   │   ├── 🧩 SpriteMatrix.tsx        # Matrix/tabular family-variant view
 │   │   ├── 🧩 SpriteCard.tsx          # Grid collectible card component
 │   │   ├── 🧩 ProceduralSprite.tsx    # SVG generator & vector sprite engine
 │   │   ├── 🧩 SpriteDetailModal.tsx   # In-depth detail modal with notes & actions
 │   │   ├── 🧩 StatsDashboard.tsx      # Analytics & collection progress charts
-│   │   ├── 🧩 PosterExportModal.tsx   # Collection image export generator
+│   │   ├── 🧩 SettingsPanel.tsx       # Backup, restore, and reset management
 │   │   └── 🧩 BackgroundParticles.tsx # Immersive ambient background effects
 │   ├── 📁 data
-│   │   └── 📄 sprites.ts              # Complete sprite registry & metadata
+│   │   ├── 📄 sprites.ts              # Complete sprite registry & metadata
+│   │   └── 📄 codes.ts                # In-game cheat codes & reward registry
 │   ├── 📄 types.ts                    # Core TypeScript definitions & schemas
 │   ├── 📄 index.css                   # Global Tailwind styling & theme tokens
 │   └── 📄 App.tsx                     # Main application layout, state, & filters

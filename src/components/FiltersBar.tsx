@@ -58,23 +58,23 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
     activeCategory !== 'All';
 
   return (
-    <div className="w-full space-y-5">
+    <div className="w-full space-y-3 sm:space-y-5">
       {/* 1. Full-Width Search Bar */}
       <div className="relative w-full">
-        <Icons.Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A855F7] dark:text-[#C084FC]" />
+        <Icons.Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#A855F7] dark:text-[#C084FC]" />
         <input
           type="text"
           value={filters.search}
           onChange={handleSearchChange}
           placeholder="Search sprites by name, variant, rarity, or tags..."
-          className="w-full pl-11 pr-10 py-3 rounded-xl border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B]/80 shadow-xs focus:bg-white focus:outline-none focus:ring-[4px] focus:ring-[#A855F7]/15 focus:border-[#A855F7] text-sm placeholder-[#7C3AED] dark:placeholder-[#A78BFA] transition-all text-[#1E1A34] dark:text-[#F3E8FF]"
+          className="w-full pl-9 sm:pl-11 pr-9 sm:pr-10 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-[#E9D5FF] dark:border-[#2A2147] bg-white dark:bg-[#18132B]/80 shadow-xs focus:bg-white focus:outline-none focus:ring-[4px] focus:ring-[#A855F7]/15 focus:border-[#A855F7] text-xs sm:text-sm placeholder-[#7C3AED] dark:placeholder-[#A78BFA] transition-all text-[#1E1A34] dark:text-[#F3E8FF]"
         />
         {filters.search && (
           <button
             onClick={() => handleSelectChange('search', '')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-[#7C3AED] hover:text-[#1E1A34] dark:hover:text-[#F3E8FF] cursor-pointer"
+            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[#7C3AED] hover:text-[#1E1A34] dark:hover:text-[#F3E8FF] cursor-pointer"
           >
-            <Icons.X className="w-4 h-4" />
+            <Icons.X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         )}
       </div>

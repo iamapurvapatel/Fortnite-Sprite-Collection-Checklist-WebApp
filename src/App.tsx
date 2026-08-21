@@ -9,8 +9,11 @@ import { SpriteCard } from './components/SpriteCard';
 import { SpriteMatrix } from './components/SpriteMatrix';
 import { SpriteDetailModal } from './components/SpriteDetailModal';
 import { SettingsPanel } from './components/SettingsPanel';
+import { CodesModal } from './components/CodesModal';
+import { FloatingActions } from './components/FloatingActions';
 import { ProceduralSprite } from './components/ProceduralSprite';
 import { BackgroundParticles } from './components/BackgroundParticles';
+import { REWARD_CODES } from './data/codes';
 import * as Icons from 'lucide-react';
 
 const getInitialChecklistForSeason = (season: SeasonId): ChecklistState => {
@@ -106,8 +109,37 @@ export default function App() {
 
   const [selectedSprite, setSelectedSprite] = useState<Sprite | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCodesOpen, setIsCodesOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [toastNotification, setToastNotification] = useState<{ title: string; description: string } | null>(null);
+
+  // --- PERSIST CLAIMED CODES ---
+  const [claimedCodes, setClaimedCodes] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('sprite_claimed_codes');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('sprite_claimed_codes', JSON.stringify(claimedCodes));
+    } catch (err) {
+      console.error('Could not save claimed codes', err);
+    }
+  }, [claimedCodes]);
+
+  const handleToggleClaimedCode = (codeId: string) => {
+    setClaimedCodes((prev) =>
+      prev.includes(codeId) ? prev.filter((id) => id !== codeId) : [...prev, codeId]
+    );
+  };
+
+  const unclaimedCodesCount = useMemo(() => {
+    return REWARD_CODES.filter((c) => !claimedCodes.includes(c.id)).length;
+  }, [claimedCodes]);
 
   // --- PERSIST ACTIVE SEASON ---
   useEffect(() => {
@@ -658,18 +690,20 @@ export default function App() {
 
       {/* Sticky Header with Backdrop Blur */}
       <div className="sticky top-0 z-50 w-full bg-[#F6F4FE]/80 dark:bg-[#0D0B18]/80 backdrop-blur-md border-b border-[#E9D5FF] dark:border-[#2A2147] transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <Header
             darkMode={darkMode}
             toggleDarkMode={() => setDarkMode(!darkMode)}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onExportImage={handleExportImage}
             isExporting={isExporting}
+            onOpenCodes={() => setIsCodesOpen(true)}
+            unclaimedCodesCount={unclaimedCodesCount}
           />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-5 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-2.5 sm:mt-4 space-y-2.5 sm:space-y-5 relative z-10">
         {/* Season Switcher Tabs (C7S4 vs C7S3) */}
         <SeasonTabs
           activeSeason={activeSeason}
@@ -826,10 +860,33 @@ export default function App() {
         onResetAll={handleResetProgress}
       />
 
+      {/* Secret Redeem Codes & Rewards Vault Modal */}
+      <CodesModal
+        isOpen={isCodesOpen}
+        onClose={() => setIsCodesOpen(false)}
+        claimedCodes={claimedCodes}
+        onToggleClaimed={handleToggleClaimedCode}
+        onSelectSprite={(sId) => {
+          const found = currentSeasonSprites.find((s) => s.id === sId);
+          if (found) {
+            setSelectedSprite(found);
+            setIsCodesOpen(false);
+          }
+        }}
+      />
+
+      {/* Floating Action Button (FAB) for Instant Image Export & Cheat Codes Access */}
+      <FloatingActions
+        onExportImage={handleExportImage}
+        isExporting={isExporting}
+        onOpenCodes={() => setIsCodesOpen(true)}
+        unclaimedCodesCount={unclaimedCodesCount}
+      />
+
       {/* --- SYSTEM NOTIFICATION TOAST --- */}
       {toastNotification && (
         <div
-          className={`fixed bottom-6 right-6 z-50 p-4 rounded-2xl text-white shadow-2xl flex items-center gap-4 animate-[fadeInScale_0.3s_cubic-bezier(0.175,0.885,0.32,1.275)] border max-w-sm ${
+          className={`fixed bottom-24 right-4 sm:bottom-28 sm:right-6 z-50 p-4 rounded-2xl text-white shadow-2xl flex items-center gap-4 animate-[fadeInScale_0.3s_cubic-bezier(0.175,0.885,0.32,1.275)] border max-w-sm ${
             toastNotification.title.includes('Failed') || toastNotification.title.includes('Error')
               ? 'bg-linear-to-r from-red-500 to-rose-600 border-rose-400/30'
               : 'bg-linear-to-r from-[#7E22CE] to-[#A855F7] border-[#C084FC]/30'
